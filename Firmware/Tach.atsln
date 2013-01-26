@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# AvrStudio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Tach", "Tach\Tach.cproj", "{E5AAAEB8-881A-4249-9E36-B5860983936A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E5AAAEB8-881A-4249-9E36-B5860983936A}.Debug|AVR.ActiveCfg = Debug|AVR
+		{E5AAAEB8-881A-4249-9E36-B5860983936A}.Debug|AVR.Build.0 = Debug|AVR
+		{E5AAAEB8-881A-4249-9E36-B5860983936A}.Release|AVR.ActiveCfg = Release|AVR
+		{E5AAAEB8-881A-4249-9E36-B5860983936A}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
