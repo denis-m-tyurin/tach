@@ -8,8 +8,10 @@
 #include "encoder_monitor.h"
 
 /* Local vars */
-uint8_t EncoderState = 0;
-uint8_t EncoderAction = ENCODER_ACTION_NO_ACTION;
+static uint8_t EncoderState = 0;
+static uint8_t LeftPulses = 0;
+static uint8_t RightPulses = 0;
+static uint8_t EncoderAction = ENCODER_ACTION_NO_ACTION;
 
 void encoder_monitor_init()
 {
@@ -42,31 +44,76 @@ void encoder_monitor_handle_timer_int()
 	{
 	case 8:
 		{
-		if(enc_current_state == 10) EncoderAction = ENCODER_ACTION_RIGHT;
-		if(enc_current_state == 0) EncoderAction = ENCODER_ACTION_LEFT; 
-		break;
+			if(enc_current_state == 10)
+			{
+				RightPulses++;
+				LeftPulses = 0;
+			}		
+			if(enc_current_state == 0) 
+			{
+				LeftPulses++;
+				RightPulses = 0;
+			}			
+			break;
 		}
  
 	case 0:
 		{
-		if(enc_current_state == 8) EncoderAction = ENCODER_ACTION_RIGHT;
-		if(enc_current_state == 2) EncoderAction = ENCODER_ACTION_LEFT; 
-		break;
+			if(enc_current_state == 8)
+			{
+				RightPulses++;
+				LeftPulses = 0;
+			}				
+			if(enc_current_state == 2)
+			{
+				LeftPulses++;
+				RightPulses = 0;
+			}				
+			break;
 		}
 	case 2:
 		{
-		if(enc_current_state == 0) EncoderAction = ENCODER_ACTION_RIGHT;
-		if(enc_current_state == 10) EncoderAction = ENCODER_ACTION_LEFT; 
-		break;
+			if(enc_current_state == 0)
+			{
+				RightPulses++;
+				LeftPulses = 0;
+			}				
+			if(enc_current_state == 10)
+			{
+				LeftPulses++;
+				RightPulses = 0;
+			}				
+			break;
 		}
 	case 10:
 		{
-		if(enc_current_state == 2) EncoderAction = ENCODER_ACTION_RIGHT;
-		if(enc_current_state == 8) EncoderAction = ENCODER_ACTION_LEFT; 
-		break;
+			if(enc_current_state == 2)
+			{
+				RightPulses++;
+				LeftPulses = 0;
+			}				
+			if(enc_current_state == 8)
+			{
+				LeftPulses++;
+				RightPulses = 0;
+			}				
+			break;
 		}
 	}
-EncoderState = enc_current_state;
+	
+	if(RightPulses == 4)
+	{
+		EncoderAction = ENCODER_ACTION_RIGHT;
+		RightPulses = 0;
+		LeftPulses = 0;
+	}		
+	if(LeftPulses == 4)
+	{
+		EncoderAction = ENCODER_ACTION_LEFT;
+		RightPulses = 0;
+		LeftPulses = 0;
+	}				
+	EncoderState = enc_current_state;
 }
 
 uint8_t encoder_monitor_get_last_action()

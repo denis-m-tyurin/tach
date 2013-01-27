@@ -35,6 +35,7 @@ uint32_t RPM_3 = 0;
 int main(void)
 {
 	uint8_t redraw_cycle = 0; /* Used to count sleep cycles to redraw screen every 0,5 sec */
+	TACH_STATE_ID_T scheduled_state; /* Used to store scheduled state */
 	
 	power_monitor_init();
 	power_monitor_set_voltage_compensation(VOLTAGE_COMPENSATION);
@@ -110,6 +111,17 @@ int main(void)
 			case ENCODER_ACTION_NO_ACTION:
 			default:
 				break;
+		}
+		
+		/* Check if any state switch is scheduled */
+		scheduled_state = tach_states_get_scheduled_state();
+		if (TACH_STATE_NO_STATE != scheduled_state)
+		{
+			tach_states_set_state(scheduled_state);
+			
+			/* Immediately redraw the screen to show new state */
+			tach_states_dispatch_event(TACH_EVENT_REDRAW_SCREEN, NULL);
+			redraw_cycle = 0;
 		}
 		
 		/* sleep 0.01 sec */

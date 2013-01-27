@@ -11,7 +11,7 @@
 
 void state_main_screen_state_enter(void *pStateBuf)
 {
-	
+	displayClear();
 }
 
 void state_main_screen_state_exit(void *pStateBuf)
@@ -35,10 +35,13 @@ void state_main_screen_state_event_handler(uint8_t event, void *pStateBuf)
 			free(out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
-			displayPrintLine("ENCODER                 ", "RIGHT                 ");
+			/* Schedule next state */
+			tach_states_schedule_state(tach_states_get_next_state());
 			break;
 		case TACH_EVENT_ENCODER_LEFT:
-			displayPrintLine("ENCODER                 ", "LEFT                 ");
+			/* Schedule prev state */
+			//tach_states_schedule_state(tach_states_get_prev_state());
+			tach_states_schedule_state(TACH_STATE_TOP_LIGHT_SWITCH);
 			break;			
 		default:
 			break;				

@@ -41,7 +41,9 @@ C_SRCS +=  \
 ../power_monitor.c \
 ../states.c \
 ../state_main_screen.c \
-../Tach.c
+../state_top_light_switch.c \
+../Tach.c \
+../utils.c
 
 
 PREPROCESSING_SRCS += 
@@ -57,7 +59,9 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
-Tach.o
+state_top_light_switch.o \
+Tach.o \
+utils.o
 
 
 OBJS_AS_ARGS +=  \
@@ -67,7 +71,9 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
-Tach.o
+state_top_light_switch.o \
+Tach.o \
+utils.o
 
 
 C_DEPS +=  \
@@ -77,7 +83,9 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
-Tach.d
+state_top_light_switch.d \
+Tach.d \
+utils.d
 
 
 C_DEPS_AS_ARGS +=  \
@@ -87,7 +95,9 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
-Tach.d
+state_top_light_switch.d \
+Tach.d \
+utils.d
 
 
 OUTPUT_FILE_PATH +=Tach.elf
@@ -99,6 +109,10 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

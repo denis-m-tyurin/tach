@@ -7,7 +7,7 @@
 #include <avr/io.h>
 #include "power_monitor.h"
 
-uint8_t voltage_compensation = 0;
+static uint8_t voltage_compensation = 0;
 
 void power_monitor_init()
 {

@@ -301,7 +301,20 @@ char displayTranslateSymb(const char symb)
 		/* Special symbols */
 		case '|':
 				return 0xff;
-
+				
+		/* Cyrillic */
+		case 'Â':
+				return 0x42;		
+		case 'É':
+				return 0xA6;				
+		case 'Î':
+				return 0x4F;
+		case 'Ï':
+				return 0xA8;
+		case 'Ò':
+				return 0x54;
+		case 'Û':
+				return 0xAE;
 		default:
 			break;
 	}
