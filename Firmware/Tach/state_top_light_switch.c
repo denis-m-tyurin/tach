@@ -9,7 +9,9 @@
 #include "states.h"
 #include "utils.h"
 
-PGM_P top_light_str = "“ŒœŒ¬€… Œ√ŒÕ‹";
+char top_light_str[] PROGMEM = " “ŒœŒ¬€… Œ√ŒÕ‹";
+char top_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ>";
+char top_light_on_str[] PROGMEM = "¬ Àﬁ◊≈Õ";
 
 void state_top_light_switch_enter(void *pStateBuf)
 {
@@ -25,10 +27,12 @@ void state_top_light_switch_exit(void *pStateBuf)
 void state_top_light_switch_event_handler(uint8_t event, void *pStateBuf)
 {	
 	char* top_light_str_tmp = utils_read_string_from_progmem(top_light_str);
+	char* top_light_off_tmp = utils_read_string_from_progmem(top_light_off_str);
+	char* top_light_on_tmp = utils_read_string_from_progmem(top_light_on_str);
 	switch (event)
 	{
 		case TACH_EVENT_REDRAW_SCREEN:		
-			displayPrintLine(top_light_str_tmp, "¬€ À");			
+			displayPrintLine(top_light_str_tmp, top_light_off_tmp);			
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Schedule next state */
@@ -47,4 +51,12 @@ void state_top_light_switch_event_handler(uint8_t event, void *pStateBuf)
 	{
 		free(top_light_str_tmp);
 	}
+	if (NULL != top_light_off_tmp) 
+	{
+		free(top_light_off_tmp);
+	}
+	if (NULL != top_light_on_tmp) 
+	{
+		free(top_light_on_tmp);
+	}		
 }
