@@ -19,12 +19,15 @@
 #include "states.h"
 #include "power_monitor.h"
 #include "encoder_monitor.h"
+#include "beeper.h"
 
 void start_timer0_tach();
 void stop_timer0_tach();
 
 /* LOCAL DEFINES */
 #define VOLTAGE_COMPENSATION 22
+#define BEEPER_FREQ_60 60
+#define BEEPER_FREQ_70 70
 
 /* LOCAL GLOBAL VARS */
 uint8_t timer_count = 0;
@@ -42,6 +45,11 @@ int main(void)
 	
 	encoder_monitor_init();
 	
+	/* Beeper used the same timer as encoder monitor, therefore
+	 * sound will only work together wil encoder monitor and should
+	 * be initialized only after encoder */
+	beeper_init();
+	
 	
 //	char *buf1 = (char*) malloc(17);
 //	char *buf2 = (char*) malloc(17);
@@ -52,24 +60,12 @@ int main(void)
 //	one_wire_bus_data_t *pBus;
 	//uint8_t sound_freq = 0;
 	
-
-	
-	/* enable sound (4 kHz)
-	 * Fast PWM. MAX ICR1
-	 * Tolge OCR1A
-	 * prescaller 16 MHz / 64 * 60 */
-//	DDRD |= (1 << PD4);
-	//TCCR1A |= (1 << COM1B1) | (1 << WGM11);
-	//TCCR1B |= (1 << WGM13) | (1 << WGM12) | (1 << CS11) | (1 << CS10);
-	//ICR1 = sound_freq;
-	//OCR1B = sound_freq / 2;
-	
 	/* NEVER PULL-UP PD7 as it is GND'ed */
 	
 	initDisplay();
 	displayClear();
 	display_set_backlight(DISPLAY_BACKLIGHT_ON);
-	displayPrintLine("STARTING UP...", "Init: OK");
+	
 //	start_timer0(); // Tach siganl monitor
 	
 	/* Enable INT0 interruptions on rising edge */
@@ -103,11 +99,17 @@ int main(void)
 		switch(encoder_monitor_get_last_action())
 		{
 			case ENCODER_ACTION_RIGHT:
+				beeper_play_tone(BEEPER_FREQ_70, 40);
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_RIGHT , NULL);
 				break;
 			case ENCODER_ACTION_LEFT:
+				beeper_play_tone(BEEPER_FREQ_70, 40);
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_LEFT , NULL);
 				break;
+			case ENCODER_ACTION_BUTTON_PRESSED:
+				beeper_play_tone(BEEPER_FREQ_60, 400);
+				tach_states_dispatch_event(TACH_EVENT_ENCODER_BUTTON_PRESSED , NULL);
+				break;				
 			case ENCODER_ACTION_NO_ACTION:
 			default:
 				break;
@@ -216,6 +218,7 @@ ISR(TIMER0_COMP_vect)
 ISR(TIMER2_COMP_vect)
 {
 	encoder_monitor_handle_timer_int();
+	beeper_handle_timer_int();
 }
 
 ISR(INT0_vect)

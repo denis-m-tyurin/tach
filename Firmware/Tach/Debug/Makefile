@@ -35,12 +35,14 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../beeper.c \
 ../display.c \
 ../encoder_monitor.c \
 ../one_wire.c \
 ../power_monitor.c \
 ../states.c \
 ../state_main_screen.c \
+../state_side_light_switch.c \
 ../state_top_light_switch.c \
 ../Tach.c \
 ../utils.c
@@ -53,48 +55,56 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+beeper.o \
 display.o \
 encoder_monitor.o \
 one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
 utils.o
 
 
 OBJS_AS_ARGS +=  \
+beeper.o \
 display.o \
 encoder_monitor.o \
 one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
 utils.o
 
 
 C_DEPS +=  \
+beeper.d \
 display.d \
 encoder_monitor.d \
 one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
 utils.d
 
 
 C_DEPS_AS_ARGS +=  \
+beeper.d \
 display.d \
 encoder_monitor.d \
 one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
 utils.d
@@ -109,6 +119,10 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

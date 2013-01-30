@@ -11,7 +11,8 @@ states.d states.o: .././states.c .././states.h \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/fuse.h \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/../../../../avr/include/avr/lock.h \
  c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27\avrtoolchain\bin\../lib/gcc/avr/4.5.1/include/stddef.h \
- .././state_main_screen.h .././state_top_light_switch.h
+ .././state_main_screen.h .././state_top_light_switch.h \
+ .././state_side_light_switch.h
 
 .././states.h:
 
@@ -42,3 +43,5 @@ c:\program\ files\ (x86)\atmel\avr\ studio\ 5.1\extensions\atmel\avrgcc\3.3.1.27
 .././state_main_screen.h:
 
 .././state_top_light_switch.h:
+
+.././state_side_light_switch.h:

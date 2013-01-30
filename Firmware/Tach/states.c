@@ -4,6 +4,7 @@
 /* include all the states */
 #include "state_main_screen.h"
 #include "state_top_light_switch.h"
+#include "state_side_light_switch.h"
 
 static void *pCurrentStateBuf = NULL;
 
@@ -11,6 +12,10 @@ static TACH_STATE_ID_T s_current_state = TACH_STATE_NO_STATE;
 static TACH_STATE_ID_T s_scheduled_state = TACH_STATE_NO_STATE;
 
 TACH_STATE_T s_states[] = {
+		{TACH_STATE_NO_STATE,
+		NULL,
+		NULL,
+		NULL},
 		{TACH_STATE_MAIN_SCREEN,
 		state_main_screen_state_enter,
 		state_main_screen_state_exit,
@@ -19,6 +24,10 @@ TACH_STATE_T s_states[] = {
 		state_top_light_switch_enter,
 		state_top_light_switch_exit,
 		state_top_light_switch_event_handler},
+		{TACH_STATE_SIDE_LIGHT_SWITCH,
+		state_side_light_switch_enter,
+		state_side_light_switch_exit,
+		state_side_light_switch_event_handler},		
 };
 
 void tach_states_set_state(TACH_STATE_ID_T state_id)
@@ -67,7 +76,7 @@ TACH_STATE_ID_T tach_states_get_prev_state()
 	if (TACH_STATE_NO_STATE == prev_state)
 	{
 		/* Jump to the last state  */
-		prev_state = TACH_EVENT_MAX - 1;
+		prev_state = TACH_STATE_STATE_MAX - 1;
 	}
 	
 	return prev_state;

@@ -82,6 +82,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="beeper.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="beeper.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="display.c">
       <SubType>compile</SubType>
     </Compile>
@@ -100,9 +106,6 @@
     <Compile Include="one_wire.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="pgmspace.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="power_monitor.c">
       <SubType>compile</SubType>
     </Compile>
@@ -119,6 +122,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_main_screen.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_side_light_switch.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_side_light_switch.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_top_light_switch.c">

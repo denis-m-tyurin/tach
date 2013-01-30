@@ -12,6 +12,11 @@ static uint8_t EncoderState = 0;
 static uint8_t LeftPulses = 0;
 static uint8_t RightPulses = 0;
 static uint8_t EncoderAction = ENCODER_ACTION_NO_ACTION;
+static uint16_t EncoderPressedButtonCounter = 0;
+static uint8_t EncoderPressedButtonEventFired = 0;
+
+/* constants */
+#define ENCODER_PRESSED_BUTTON_CYCLES_TRESHOLD 100
 
 void encoder_monitor_init()
 {
@@ -24,7 +29,9 @@ void encoder_monitor_init()
 	OCR2 = 0xFF;
 	TIMSK |= (1 << OCIE2); /* Enable output compare match interrupt. */
 	
-	/* !!! Interrupt handler for Timer2 is in tach.c file */	
+	/* !!! Interrupt handler for Timer2 is in tach.c file 
+	 * The same handler is used for beeper, therefore sound will work
+	 * only together with encoder monitor */	
 	
 	/* Use the following code to stop Timer2 whenever required ( currently not used ) */
 	#if 0
@@ -114,6 +121,30 @@ void encoder_monitor_handle_timer_int()
 		LeftPulses = 0;
 	}				
 	EncoderState = enc_current_state;
+	
+	/* check if the button is pressed */
+	if (0 == (PIND & (1 << PD0)) )
+	{
+		if (0 == EncoderPressedButtonEventFired)
+		{
+			EncoderPressedButtonCounter++;
+		
+			/* Fire the pressed button event whenever counter exceeds the threshold
+			* Skip this cycle if another event has already happened  */
+			if ((EncoderPressedButtonCounter > ENCODER_PRESSED_BUTTON_CYCLES_TRESHOLD) && (ENCODER_ACTION_NO_ACTION == EncoderAction))
+			{
+				EncoderAction = ENCODER_ACTION_BUTTON_PRESSED;
+				EncoderPressedButtonCounter = 0;
+				EncoderPressedButtonEventFired = 1;
+			}
+		}			
+	}
+	else
+	{
+		EncoderPressedButtonCounter = 0;
+		EncoderPressedButtonEventFired = 0;
+	}
+	
 }
 
 uint8_t encoder_monitor_get_last_action()

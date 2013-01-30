@@ -40,8 +40,7 @@ void state_main_screen_state_event_handler(uint8_t event, void *pStateBuf)
 			break;
 		case TACH_EVENT_ENCODER_LEFT:
 			/* Schedule prev state */
-			//tach_states_schedule_state(tach_states_get_prev_state());
-			tach_states_schedule_state(TACH_STATE_TOP_LIGHT_SWITCH);
+			tach_states_schedule_state(tach_states_get_prev_state());			
 			break;			
 		default:
 			break;				
