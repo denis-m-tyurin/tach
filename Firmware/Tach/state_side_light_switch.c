@@ -8,31 +8,61 @@
 #include "state_side_light_switch.h"
 #include "states.h"
 #include "utils.h"
+#include "display.h"
 
-char side_light_str[] PROGMEM = " ¡Œ–“Œ¬€≈ Œ√Õ»";
-char side_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ€>";
-char side_light_on_str[] PROGMEM = "    <√Œ–ﬂ“>  ";
+const char side_light_str[] PROGMEM = " ¡Œ–“Œ¬€≈ Œ√Õ»";
+const char side_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ€>";
+const char side_light_on_str[] PROGMEM = "    <√Œ–ﬂ“>   ";
 
 /* Side light switch is PA6 normally pulled down */
 
 static uint8_t sidelight = 1;
 
-void state_side_light_switch_enter(void *pStateBuf)
+typedef struct
 {
+	char* side_light_str_tmp;
+	char* side_light_off_tmp;
+	char* side_light_on_tmp;
+} sidelight_state_strings;
+
+void state_side_light_switch_enter(void **pStateBuf)
+{
+	sidelight_state_strings *pStrings;
 	displayClear();
+	*pStateBuf = malloc(sizeof(sidelight_state_strings));
+	pStrings = (sidelight_state_strings*) *pStateBuf;
+	pStrings->side_light_str_tmp = utils_read_string_from_progmem(side_light_str);
+	pStrings->side_light_off_tmp = utils_read_string_from_progmem(side_light_off_str);
+	pStrings->side_light_on_tmp = utils_read_string_from_progmem(side_light_on_str);
 }
 
-void state_side_light_switch_exit(void *pStateBuf)
+void state_side_light_switch_exit(void **pStateBuf)
 {
-	
+		sidelight_state_strings *pStrings = (sidelight_state_strings*) *pStateBuf;
+		
+		if (NULL != pStrings->side_light_str_tmp)
+		{
+			free(pStrings->side_light_str_tmp);
+		}
+		if (NULL != pStrings->side_light_off_tmp)
+		{
+			free(pStrings->side_light_off_tmp);
+		}
+		if (NULL != pStrings->side_light_on_tmp)
+		{
+			free(pStrings->side_light_on_tmp);
+		}
+		if (NULL != *pStateBuf)
+		{
+			free(*pStateBuf);
+		}	
 }
 
 
-void state_side_light_switch_event_handler(uint8_t event, void *pStateBuf)
+void state_side_light_switch_event_handler(uint8_t event, void **pStateBuf, void *data)
 {	
-	char* side_light_str_tmp = utils_read_string_from_progmem(side_light_str);
-	char* side_light_off_tmp = utils_read_string_from_progmem(side_light_off_str);
-	char* side_light_on_tmp = utils_read_string_from_progmem(side_light_on_str);
+	sidelight_state_strings *pStrings = (sidelight_state_strings*) *pStateBuf;
+
 	switch (event)
 	{
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
@@ -41,7 +71,7 @@ void state_side_light_switch_event_handler(uint8_t event, void *pStateBuf)
 		
 			/* do not break here to redraw screen immediately */				
 		case TACH_EVENT_REDRAW_SCREEN:		
-			displayPrintLine(side_light_str_tmp, (sidelight == 0 ? side_light_off_tmp : side_light_on_tmp));
+			displayPrintLine(pStrings->side_light_str_tmp, (sidelight == 0 ? pStrings->side_light_off_tmp : pStrings->side_light_on_tmp));
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Schedule next state */
@@ -53,18 +83,5 @@ void state_side_light_switch_event_handler(uint8_t event, void *pStateBuf)
 			break;		
 		default:
 			break;				
-	}	
-	
-	if (NULL != side_light_str_tmp) 
-	{
-		free(side_light_str_tmp);
-	}
-	if (NULL != side_light_off_tmp) 
-	{
-		free(side_light_off_tmp);
-	}
-	if (NULL != side_light_on_tmp) 
-	{
-		free(side_light_on_tmp);
 	}		
 }

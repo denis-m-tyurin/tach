@@ -18,6 +18,8 @@
  *				|
  *	< SETTINGS									>
  *							|
+ *	< SETTINGS:	SET TACH PULSES PER REVOLUTION	>
+ *							|
  *	< SETTINGS:	SET MAX TACH					>
  *							|
  *	< SETTINGS:	SET MIN TACH					>
@@ -40,6 +42,8 @@ typedef enum
 	TACH_STATE_MAIN_SCREEN,
 	TACH_STATE_TOP_LIGHT_SWITCH,
 	TACH_STATE_SIDE_LIGHT_SWITCH,
+	TACH_STATE_SETTINGS_PARENT,
+	TACH_STATE_SETTINGS_TACH_PULSES,
 	
 	TACH_STATE_STATE_MAX
 } TACH_STATE_ID_T;
@@ -52,14 +56,14 @@ typedef enum
 	TACH_EVENT_ENCODER_BUTTON_PRESSED,
 		
 	TACH_EVENT_MAX
-};
+} event_list;
 
 typedef struct  
 {
 	int state_id;
-	void (*state_enter)(void *);
-	void (*state_exit)(void *);
-	void (*state_event_handler)(uint8_t, void *);	
+	void (*state_enter)(void **);
+	void (*state_exit)(void **);
+	void (*state_event_handler)(uint8_t, void **, void*);	
 } TACH_STATE_T;
 
 void tach_states_set_state(TACH_STATE_ID_T state_id);

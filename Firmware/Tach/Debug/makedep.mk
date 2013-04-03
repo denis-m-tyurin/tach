@@ -16,6 +16,10 @@ states.c
 
 state_main_screen.c
 
+state_settings_parent.c
+
+state_settings_tach_pulses.c
+
 state_side_light_switch.c
 
 state_top_light_switch.c

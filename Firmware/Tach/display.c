@@ -303,6 +303,8 @@ char displayTranslateSymb(const char symb)
 				return 0xff;
 				
 		/* Cyrillic */
+		case 'À':
+				return 0x41;		
 		case 'Á':
 				return 0xA0;	
 		case 'Â':
@@ -319,6 +321,8 @@ char displayTranslateSymb(const char symb)
 				return 0x4B;
 		case 'Ë':
 				return 0xA7;
+		case 'Ì':
+				return 0x4D;
 		case 'Í':
 				return 0x48;
 		case 'Î':
@@ -327,10 +331,16 @@ char displayTranslateSymb(const char symb)
 				return 0xA8;
 		case 'Ğ':
 				return 0x50;
+		case 'Ñ':
+				return 0x43;
 		case 'Ò':
 				return 0x54;
+		case 'Ó':
+				return 0xA9;
 		case 'Ş':
 				return 0xB0;
+		case 'X':
+				return 0x58;
 		case '×':
 				return 0xAB;
 		case 'Û':

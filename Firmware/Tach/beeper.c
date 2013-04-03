@@ -21,6 +21,7 @@ void beeper_init()
 	TCCR1A |= (1 << COM1B1) | (1 << WGM11);
 	TCCR1B |= (1 << WGM13) | (1 << WGM12) | (1 << CS11) | (1 << CS10);
 	
+#if 0 // TEMPORARILY SWITCH OFF
 	while(rampup_freq > 50)
 	{
 		ICR1 = rampup_freq;
@@ -29,6 +30,7 @@ void beeper_init()
 		rampup_freq--;
 		
 	}
+#endif	
 	ICR1 = 0;
 	OCR1B = 0;	
 }

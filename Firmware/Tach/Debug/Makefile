@@ -42,6 +42,8 @@ C_SRCS +=  \
 ../power_monitor.c \
 ../states.c \
 ../state_main_screen.c \
+../state_settings_parent.c \
+../state_settings_tach_pulses.c \
 ../state_side_light_switch.c \
 ../state_top_light_switch.c \
 ../Tach.c \
@@ -62,6 +64,8 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_settings_parent.o \
+state_settings_tach_pulses.o \
 state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
@@ -76,6 +80,8 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_settings_parent.o \
+state_settings_tach_pulses.o \
 state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
@@ -90,6 +96,8 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_settings_parent.d \
+state_settings_tach_pulses.d \
 state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
@@ -104,6 +112,8 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_settings_parent.d \
+state_settings_tach_pulses.d \
 state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
@@ -142,10 +152,14 @@ OUTPUT_FILE_DEP:= ./makedep.mk
 
 
 
+
+
+
+
 ./%.o: .././%.c
 	@echo Building file: $<
-	@echo Invoking: AVR/GNU C Compiler
-	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE)  -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)"  -mmcu=atmega32a  -o"$@" "$<" 
+	@echo Invoking: AVR/GNU C Compiler : (AVR_8_bit_GNU_Toolchain_3.4.0_663) 4.6.2
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-gcc.exe$(QUOTE) -funsigned-char -funsigned-bitfields -O1 -fpack-struct -fshort-enums -g2 -Wall -c -std=gnu99 -MD -MP -MF "$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -MT"$(@:%.o=%.o)"  -mmcu=atmega32a   -o"$@" "$<" 
 	@echo Finished building: $<
 
 
@@ -172,14 +186,15 @@ all: $(OUTPUT_FILE_PATH) $(ADDITIONAL_DEPENDENCIES)
 
 $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 	@echo Building target: $@
-	@echo Invoking: AVR/GNU C Linker
-	$(QUOTE)C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Tach.map" -Wl,-lm   -mmcu=atmega32a  
+	@echo Invoking: AVR/GNU Linker : (AVR_8_bit_GNU_Toolchain_3.4.0_663) 4.6.2
+	$(QUOTE)C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-gcc.exe$(QUOTE) -o$(OUTPUT_FILE_PATH_AS_ARGS) $(OBJS_AS_ARGS) $(USER_OBJS) $(LIBS) -Wl,-Map="Tach.map" -Wl,--start-group -Wl,-lm  -Wl,--end-group  -mmcu=atmega32a  
 	@echo Finished building target: $@
-	"C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "Tach.elf" "Tach.hex"
-	"C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Tach.elf" "Tach.eep" || exit 0
-	"C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-objdump.exe" -h -S "Tach.elf" > "Tach.lss"
-	"C:\Program Files (x86)\Atmel\AVR Studio 5.1\extensions\Atmel\AVRGCC\3.3.1.27\AVRToolchain\bin\avr-size.exe" -C --mcu=atmega32a  "Tach.elf"
+	"C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-objcopy.exe" -O ihex -R .eeprom -R .fuse -R .lock -R .signature  "Tach.elf" "Tach.hex"
+	"C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-objcopy.exe" -j .eeprom  --set-section-flags=.eeprom=alloc,load --change-section-lma .eeprom=0  --no-change-warnings -O ihex "Tach.elf" "Tach.eep" || exit 0
+	"C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-objdump.exe" -h -S "Tach.elf" > "Tach.lss"
+	"C:\Program Files (x86)\Atmel\Atmel Studio 6.0\extensions\Atmel\AVRGCC\3.4.0.65\AVRToolchain\bin\avr-size.exe" "Tach.elf"
 	
+
 
 
 
@@ -187,5 +202,5 @@ $(OUTPUT_FILE_PATH): $(OBJS) $(USER_OBJS) $(OUTPUT_FILE_DEP)
 # Other Targets
 clean:
 	-$(RM) $(OBJS_AS_ARGS)$(C_DEPS_AS_ARGS) $(EXECUTABLES) 
-	rm -rf "Tach.hex" "Tach.lss" "Tach.eep" "Tach.map"
+	rm -rf "Tach.elf" "Tach.a" "Tach.hex" "Tach.lss" "Tach.eep" "Tach.map"
 	

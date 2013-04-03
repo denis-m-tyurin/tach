@@ -7,7 +7,7 @@
 
 #include "utils.h"
 
-char* utils_read_string_from_progmem(char* str_to_read)
+char* utils_read_string_from_progmem(const char* str_to_read)
 {
 	size_t length = strlen_P(str_to_read);
 	char* result = NULL;

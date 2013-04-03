@@ -8,31 +8,61 @@
 #include "state_top_light_switch.h"
 #include "states.h"
 #include "utils.h"
+#include "display.h"
 
-char top_light_str[] PROGMEM = " “ŒœŒ¬€… Œ√ŒÕ‹";
-char top_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ>";
-char top_light_on_str[] PROGMEM = "    <√Œ–»“>  ";
+const char top_light_str[] PROGMEM = " “ŒœŒ¬€… Œ√ŒÕ‹";
+const char top_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ>";
+const char top_light_on_str[] PROGMEM = "    <√Œ–»“>   ";
 
 /* Top light switch is PA7 normally pulled down */
 
 static uint8_t toplight = 1;
 
-void state_top_light_switch_enter(void *pStateBuf)
+typedef struct 
 {
-	displayClear();
+	char* top_light_str_tmp;
+	char* top_light_off_tmp;
+	char* top_light_on_tmp;
+} toplight_state_strings;
+
+void state_top_light_switch_enter(void **pStateBuf)
+{
+	toplight_state_strings *pStrings;
+	displayClear();	
+	*pStateBuf = malloc(sizeof(toplight_state_strings));
+	pStrings = (toplight_state_strings*) *pStateBuf;
+	pStrings->top_light_str_tmp = utils_read_string_from_progmem(top_light_str);
+	pStrings->top_light_off_tmp = utils_read_string_from_progmem(top_light_off_str);
+	pStrings->top_light_on_tmp = utils_read_string_from_progmem(top_light_on_str);
 }
 
-void state_top_light_switch_exit(void *pStateBuf)
+void state_top_light_switch_exit(void **pStateBuf)
 {
-	
+		toplight_state_strings *pStrings = (toplight_state_strings*) *pStateBuf;
+		
+		if (NULL != pStrings->top_light_str_tmp)
+		{
+			free(pStrings->top_light_str_tmp);
+		}
+		if (NULL != pStrings->top_light_off_tmp)
+		{
+			free(pStrings->top_light_off_tmp);
+		}
+		if (NULL != pStrings->top_light_on_tmp)
+		{
+			free(pStrings->top_light_on_tmp);
+		}
+		if (NULL != *pStateBuf)
+		{
+			free(*pStateBuf);
+		}
 }
 
 
-void state_top_light_switch_event_handler(uint8_t event, void *pStateBuf)
+void state_top_light_switch_event_handler(uint8_t event, void **pStateBuf, void *data)
 {	
-	char* top_light_str_tmp = utils_read_string_from_progmem(top_light_str);
-	char* top_light_off_tmp = utils_read_string_from_progmem(top_light_off_str);
-	char* top_light_on_tmp = utils_read_string_from_progmem(top_light_on_str);
+	toplight_state_strings *pStrings = (toplight_state_strings*) *pStateBuf;
+
 	switch (event)
 	{
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
@@ -41,7 +71,7 @@ void state_top_light_switch_event_handler(uint8_t event, void *pStateBuf)
 		
 			/* do not break here to redraw screen immediatelly */	
 		case TACH_EVENT_REDRAW_SCREEN:		
-			displayPrintLine(top_light_str_tmp, (toplight == 0 ? top_light_off_tmp : top_light_on_tmp));
+			displayPrintLine(pStrings->top_light_str_tmp, (toplight == 0 ? pStrings->top_light_off_tmp : pStrings->top_light_on_tmp));
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Schedule next state */
@@ -54,17 +84,4 @@ void state_top_light_switch_event_handler(uint8_t event, void *pStateBuf)
 		default:
 			break;				
 	}	
-	
-	if (NULL != top_light_str_tmp) 
-	{
-		free(top_light_str_tmp);
-	}
-	if (NULL != top_light_off_tmp) 
-	{
-		free(top_light_off_tmp);
-	}
-	if (NULL != top_light_on_tmp) 
-	{
-		free(top_light_on_tmp);
-	}		
 }

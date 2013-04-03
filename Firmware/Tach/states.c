@@ -5,6 +5,8 @@
 #include "state_main_screen.h"
 #include "state_top_light_switch.h"
 #include "state_side_light_switch.h"
+#include "state_settings_parent.h"
+#include "state_settings_tach_pulses.h"
 
 static void *pCurrentStateBuf = NULL;
 
@@ -28,6 +30,14 @@ TACH_STATE_T s_states[] = {
 		state_side_light_switch_enter,
 		state_side_light_switch_exit,
 		state_side_light_switch_event_handler},		
+		{TACH_STATE_SETTINGS_PARENT,
+		state_settings_parent_enter,
+		state_settings_parent_exit,
+		state_settings_parent_event_handler},		
+		{TACH_STATE_SETTINGS_TACH_PULSES,
+		state_settings_tach_pulses_enter,
+		state_settings_tach_pulses_exit,
+		state_settings_tach_pulses_event_handler},		
 };
 
 void tach_states_set_state(TACH_STATE_ID_T state_id)
@@ -42,12 +52,12 @@ void tach_states_set_state(TACH_STATE_ID_T state_id)
 		/* Check whether we have an active state. Tear it down if necessary */
 		if (TACH_STATE_NO_STATE != s_current_state)
 		{
-			s_states[s_current_state].state_exit(pCurrentStateBuf);
+			s_states[s_current_state].state_exit(&pCurrentStateBuf);
 		}
 	
 		/* Init the new state */
 		s_current_state = state_id;
-		s_states[s_current_state].state_enter(pCurrentStateBuf);
+		s_states[s_current_state].state_enter(&pCurrentStateBuf);
 	}
 }
 
@@ -96,6 +106,6 @@ void tach_states_dispatch_event(uint8_t event, void *data)
 		return;
 	
 	/* Dispatch event to current state */
-	s_states[s_current_state].state_event_handler(event, data);
+	s_states[s_current_state].state_event_handler(event, &pCurrentStateBuf, data);
 	
 }
