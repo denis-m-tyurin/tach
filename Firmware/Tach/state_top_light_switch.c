@@ -16,7 +16,7 @@ const char top_light_on_str[] PROGMEM = "    <ÃÎÐÈÒ>   ";
 
 /* Top light switch is PA7 normally pulled down */
 
-static uint8_t toplight = 1;
+static uint8_t toplight = 0;
 
 typedef struct 
 {
@@ -68,8 +68,16 @@ void state_top_light_switch_event_handler(uint8_t event, void **pStateBuf, void 
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
 			/* Switch state of the top light */
 			toplight = (toplight == 0 ? 1 : 0);
+			if (1 == toplight)
+			{
+				PORTA |= (1 << PA7);
+			}
+			else
+			{
+				PORTA &= ~(1 << PA7);
+			}
 		
-			/* do not break here to redraw screen immediatelly */	
+			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:		
 			displayPrintLine(pStrings->top_light_str_tmp, (toplight == 0 ? pStrings->top_light_off_tmp : pStrings->top_light_on_tmp));
 			break;

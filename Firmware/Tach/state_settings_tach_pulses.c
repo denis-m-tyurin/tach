@@ -77,8 +77,8 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 		case TACH_EVENT_ENCODER_LEFT:
 			if (1 == view_mode)
 			{
-				/* Schedule prev state */
-				tach_states_schedule_state(tach_states_get_prev_state());				
+				/* Jump into last settings state */
+				tach_states_schedule_state(TACH_STATE_SETTINGS_EXIT);				
 			}
 			else
 			{

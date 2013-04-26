@@ -25,7 +25,7 @@ void start_timer0_tach();
 void stop_timer0_tach();
 
 /* LOCAL DEFINES */
-#define VOLTAGE_COMPENSATION 22
+#define VOLTAGE_COMPENSATION 10
 #define BEEPER_FREQ_60 60
 #define BEEPER_FREQ_70 70
 
@@ -46,7 +46,7 @@ int main(void)
 	encoder_monitor_init();
 	
 	/* Beeper used the same timer as encoder monitor, therefore
-	 * sound will only work together wil encoder monitor and should
+	 * sound will only work together with encoder monitor and should
 	 * be initialized only after encoder */
 	beeper_init();
 	
@@ -65,6 +65,10 @@ int main(void)
 	initDisplay();
 	displayClear();
 	display_set_backlight(DISPLAY_BACKLIGHT_ON);
+	
+	/* Configure TOP and SIDE light switch pins */
+	DDRA |= (1 << PA7) | (1 << PA6);
+	PORTA &= ~((1 << PA6) | (1 << PA7));
 	
 //	start_timer0(); // Tach siganl monitor
 	

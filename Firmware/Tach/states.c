@@ -7,6 +7,8 @@
 #include "state_side_light_switch.h"
 #include "state_settings_parent.h"
 #include "state_settings_tach_pulses.h"
+#include "state_settings_voltage_comp.h"
+#include "state_settings_exit.h"
 
 static void *pCurrentStateBuf = NULL;
 
@@ -38,6 +40,14 @@ TACH_STATE_T s_states[] = {
 		state_settings_tach_pulses_enter,
 		state_settings_tach_pulses_exit,
 		state_settings_tach_pulses_event_handler},		
+		{TACH_STATE_SETTINGS_VOLTAGE_COMP,
+		state_settings_voltage_comp_enter,
+		state_settings_voltage_comp_exit,
+		state_settings_voltage_comp_event_handler},		
+		{TACH_STATE_SETTINGS_EXIT,
+		state_settings_exit_enter,
+		state_settings_exit_exit,
+		state_settings_exit_event_handler},		
 };
 
 void tach_states_set_state(TACH_STATE_ID_T state_id)

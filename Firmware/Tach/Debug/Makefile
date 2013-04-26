@@ -42,8 +42,10 @@ C_SRCS +=  \
 ../power_monitor.c \
 ../states.c \
 ../state_main_screen.c \
+../state_settings_exit.c \
 ../state_settings_parent.c \
 ../state_settings_tach_pulses.c \
+../state_settings_voltage_comp.c \
 ../state_side_light_switch.c \
 ../state_top_light_switch.c \
 ../Tach.c \
@@ -64,8 +66,10 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_settings_exit.o \
 state_settings_parent.o \
 state_settings_tach_pulses.o \
+state_settings_voltage_comp.o \
 state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
@@ -80,8 +84,10 @@ one_wire.o \
 power_monitor.o \
 states.o \
 state_main_screen.o \
+state_settings_exit.o \
 state_settings_parent.o \
 state_settings_tach_pulses.o \
+state_settings_voltage_comp.o \
 state_side_light_switch.o \
 state_top_light_switch.o \
 Tach.o \
@@ -96,8 +102,10 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_settings_exit.d \
 state_settings_parent.d \
 state_settings_tach_pulses.d \
+state_settings_voltage_comp.d \
 state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
@@ -112,8 +120,10 @@ one_wire.d \
 power_monitor.d \
 states.d \
 state_main_screen.d \
+state_settings_exit.d \
 state_settings_parent.d \
 state_settings_tach_pulses.d \
+state_settings_voltage_comp.d \
 state_side_light_switch.d \
 state_top_light_switch.d \
 Tach.d \
@@ -129,6 +139,10 @@ ADDITIONAL_DEPENDENCIES:=
 OUTPUT_FILE_DEP:= ./makedep.mk
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 

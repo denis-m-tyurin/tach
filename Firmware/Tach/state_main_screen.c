@@ -31,7 +31,7 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 		case TACH_EVENT_REDRAW_SCREEN:
 			voltage = power_monitor_get_voltage();
 			out_buf = (char*) malloc(17);
-			snprintf(out_buf, 16, "%.2u.%.2uV                 ", voltage/66, voltage % 66);
+			snprintf(out_buf, 16, "%.2u.%.2uV                 ", voltage / 66, ((voltage % 66) * 151) / 100);
 			displayPrintLine("REdRAW", out_buf);
 			free(out_buf);
 			break;
@@ -40,8 +40,8 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 			tach_states_schedule_state(tach_states_get_next_state());
 			break;
 		case TACH_EVENT_ENCODER_LEFT:
-			/* Schedule prev state */
-			tach_states_schedule_state(tach_states_get_prev_state());			
+			/* Schedule settings parent state */
+			tach_states_schedule_state(TACH_STATE_SETTINGS_PARENT);			
 			break;			
 		default:
 			break;				
