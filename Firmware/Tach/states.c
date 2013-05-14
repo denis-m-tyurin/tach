@@ -3,10 +3,15 @@
 
 /* include all the states */
 #include "state_main_screen.h"
+#include "state_tach_advanced.h"
+#include "state_voltage_advanced.h"
 #include "state_top_light_switch.h"
 #include "state_side_light_switch.h"
 #include "state_settings_parent.h"
 #include "state_settings_tach_pulses.h"
+#include "state_settings_max_tach.h"
+#include "state_settings_backlight_intensity.h"
+#include "state_settings_backlight_timeout.h"
 #include "state_settings_voltage_comp.h"
 #include "state_settings_exit.h"
 
@@ -24,6 +29,14 @@ TACH_STATE_T s_states[] = {
 		state_main_screen_state_enter,
 		state_main_screen_state_exit,
 		state_main_screen_state_event_handler},
+		{TACH_STATE_TACH_ADVANCED,
+		state_tach_advanced_state_enter,
+		state_tach_advanced_state_exit,
+		state_tach_advanced_state_event_handler},
+		{TACH_STATE_VOLTAGE_ADVANCED,
+		state_voltage_advanced_state_enter,
+		state_voltage_advanced_state_exit,
+		state_voltage_advanced_state_event_handler},
 		{TACH_STATE_TOP_LIGHT_SWITCH,
 		state_top_light_switch_enter,
 		state_top_light_switch_exit,
@@ -40,6 +53,18 @@ TACH_STATE_T s_states[] = {
 		state_settings_tach_pulses_enter,
 		state_settings_tach_pulses_exit,
 		state_settings_tach_pulses_event_handler},		
+		{TACH_STATE_SETTINGS_MAX_TACH,
+		state_settings_max_tach_enter,
+		state_settings_max_tach_exit,
+		state_settings_max_tach_event_handler},		
+		{TACH_STATE_SETTINGS_BACKLIGHT_INTENSITY,
+		state_settings_backlight_intensity_enter,
+		state_settings_backlight_intensity_exit,
+		state_settings_backlight_intensity_event_handler},		
+		{TACH_STATE_SETTINGS_BACKLIGHT_TIMEOUT,
+		state_settings_backlight_timeout_enter,
+		state_settings_backlight_timeout_exit,
+		state_settings_backlight_timeout_event_handler},
 		{TACH_STATE_SETTINGS_VOLTAGE_COMP,
 		state_settings_voltage_comp_enter,
 		state_settings_voltage_comp_exit,

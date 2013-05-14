@@ -1,0 +1,6 @@
+Debug
+Release
+*.bak
+*.swp
+*.o
+*.hex

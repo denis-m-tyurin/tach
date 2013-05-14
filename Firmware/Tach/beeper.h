@@ -1,5 +1,5 @@
-#ifndef ENCODER_MONITOR_H
-#define ENCODER_MONITOR_H
+#ifndef BEEPER_H
+#define BEEPER_H
 
 
 void beeper_init();
