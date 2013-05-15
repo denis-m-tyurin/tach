@@ -20,28 +20,29 @@
 #include "power_monitor.h"
 #include "encoder_monitor.h"
 #include "beeper.h"
+#include "settings_manager.h"
+#include "tach_monitor.h"
 
 void start_timer0_tach();
 void stop_timer0_tach();
 
 /* LOCAL DEFINES */
-#define VOLTAGE_COMPENSATION 10
 #define BEEPER_FREQ_60 60
 #define BEEPER_FREQ_70 70
 
 /* LOCAL GLOBAL VARS */
-uint8_t timer_count = 0;
+uint32_t timer0_count = 0;
 uint32_t tach_pulse_count = 0;
-uint32_t total_pulse_count = 0;
-uint32_t RPM_3 = 0;
+
 
 int main(void)
 {
 	uint8_t redraw_cycle = 0; /* Used to count sleep cycles to redraw screen every 0,5 sec */
 	TACH_STATE_ID_T scheduled_state; /* Used to store scheduled state */
 	
+	settings_manager_init();
 	power_monitor_init();
-	power_monitor_set_voltage_compensation(VOLTAGE_COMPENSATION);
+	power_monitor_set_voltage_compensation(settings_manager_get_voltage_compensation()); 
 	
 	encoder_monitor_init();
 	
@@ -70,11 +71,6 @@ int main(void)
 	DDRA |= (1 << PA7) | (1 << PA6);
 	PORTA &= ~((1 << PA6) | (1 << PA7));
 	
-//	start_timer0(); // Tach siganl monitor
-	
-	/* Enable INT0 interruptions on rising edge */
-//	MCUCR |= (1 << ISC01) | (1 << ISC00);
-//	GICR |= (1 << INT0);
 	
 	/* Initialize 1-wire bus */
 //	pBus = 	one_wire_initialize_bus(ONE_WIRE_PORT_A, PA4);
@@ -83,6 +79,15 @@ int main(void)
 	tach_states_set_state(TACH_STATE_MAIN_SCREEN);
 
 	sei();
+	
+	/* Start tach counting */
+	/* Enable INT0 interruptions on rising edge */
+	tach_pulse_count = 0;
+	timer0_count = 0;
+	MCUCR |= (1 << ISC01) | (1 << ISC00);
+	GICR |= (1 << INT0);
+	start_timer0_tach();
+	
     while(1)
     {		
 		
@@ -177,23 +182,19 @@ int main(void)
 	//	snprintf(buf1, 16, "%.2u.%.2uV   %c%d.%.2u    ", voltage/66, voltage % 66, (pTempData->is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'), pTempData->degree_base, pTempData->degree_mantissa / 100);
 	//snprintf(buf2, 16, "%lu %lu %d, %d           ", RPM_3 / 6, RPM_3 / 8, sound_freq, EncoderData / 4);
 	//	displayPrintLine(buf1, buf2);
-		
-#if 0
-		/* Go to sleep */
-		MCUCR |= (1 << 7) | (1 << 5);		
-		displayPrintLine("Going to sleep       ", "Bye!!!             ");
-		sleep_mode();		
-#endif		
-		
+	
     }
 }
 
-/* Timer0 is used to count Tach impulses */
+/* Timer0 is used to measure timeframe for Tach */
 void start_timer0_tach()
 {
-	/* WGM01=1 - Clear Timer on Compare mode; 1024 - prescaler */	
-	TCCR0 = (1 << WGM01) | (1 << CS02) | (1 << CS00);
-	OCR0 = 0xFF;
+	/* WGM01=1 - Clear Timer on Compare mode; 64 - prescaler
+	 * Will get us 16 000 000 / 64 = 250 000 timer ticks per second (~980 interrupts a second)
+	 * So that each 1 tick of the counter would take 0.000004 sec */
+	
+	TCCR0 = (1 << WGM01) | (1 << CS01) | (1 << CS00);
+	OCR0 = 0xFF; // Set MAX to 255
 	TIMSK |= (1 << OCIE0); /* Enable output compare match interrupt */
 }
 
@@ -208,15 +209,7 @@ ISR(TIMER0_COMP_vect)
 	/* This is called 61 times a second, i.e. 61 Hz
 	  * 16 000 000 (16Mhz sys clock) / 1024 (pre-scaler) / 256 (top) = 61 */
 
-	timer_count++;	
-
-	if (timer_count == 61)
-	{
-		RPM_3 = tach_pulse_count * 60;
-		total_pulse_count += tach_pulse_count;
-		tach_pulse_count = 0;
-		timer_count = 0;		
-	}
+	timer0_count++;
 }
 
 ISR(TIMER2_COMP_vect)
@@ -227,5 +220,36 @@ ISR(TIMER2_COMP_vect)
 
 ISR(INT0_vect)
 {
-	tach_pulse_count++;	
+	/* Tach calculation method:
+	 * Min rpm is about 700. Max is 6500
+	 * Which is ~11-108 revolutions per second X pulses per revolution
+	 * The idea is to measure a timeframe of N pulses
+	 * RPM = 60 / (MEASURED_TIME_SEC / N_PULSES) / PULSES_PER_REVOLUTION
+	 *
+	 * Example: 1000 RPM, 4 pulses per revolution
+	 * 
+	 * 1000 RPM would be 4000 pulses per minute, or 66.7 pulses per second
+	 * 1 pulse would take 0.015 sec	 
+	 * 
+	 * 1000 RPM = 60 / (0.15 / 10) / 4
+	 */
+	
+	tach_pulse_count++;
+	
+	if (tach_pulse_count == TACH_MONITOR_PULSES_TO_PROBE)
+	{
+		/* Stop Timer 0 */
+		stop_timer0_tach();
+		
+		/* Reset counter */
+		tach_pulse_count = 0;
+		
+		/* Calculate RPM */
+		
+		/* Start Timer 0 counter */
+		timer0_count = 0;
+		start_timer0_tach();
+	}
+	
+	
 }
