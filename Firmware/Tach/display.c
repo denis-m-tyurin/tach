@@ -59,34 +59,55 @@
 #define DISPLAY_SYMB_SIZE_5X11			0x4
 #define DISPLAY_SYMB_SIZE_5X8			0x0
 
-
 void displaySendCommand(uint8_t command, double delay_in_us);
 void displaySendData(uint8_t data);
 char displayTranslateSymb(const char symb);
 static inline void delay_ms(uint16_t count);
 static inline void delay_us(uint16_t count);
 
+static uint8_t backlight_pwm_enabled = 0;
+
 /********************************************
  *      PUBLIC FUNCTIONS                    *
  *******************************************/
-void display_set_backlight( uint8_t percent )
+void display_set_backlight( uint8_t backlight_level )
 {
 	/* Configure pin just in case */
 	DISPLAY_BACKLIGHT_DDR |= (1 << DISPLAY_BACKLIGHT_PIN);
 	
-	if (0 == percent)
+	if (0 == backlight_level)
 	{
 		/* Turn PWM off and set pin to 0 */
-		DISPLAY_BACKLIGHT_PORT &= ~(1 << DISPLAY_BACKLIGHT_PIN);
+		if (1 == backlight_pwm_enabled)
+		{
+			TCCR1A &= ~(1 << COM1A1);
+			backlight_pwm_enabled = 0;
+		}
+		DISPLAY_BACKLIGHT_PORT &= ~(1 << DISPLAY_BACKLIGHT_PIN);		
 		
-	} else if ( 100 <= percent )
+	} else if (BACKLIGHT_TOP == backlight_level)
 	{
 		/* Turn PWM off and set pin to 1 */
-		DISPLAY_BACKLIGHT_PORT |= (1 << DISPLAY_BACKLIGHT_PIN);
+		if (1 == backlight_pwm_enabled)
+		{
+			TCCR1A &= ~(1 << COM1A1);
+			backlight_pwm_enabled = 0;
+		}		
+
+		DISPLAY_BACKLIGHT_PORT |= (1 << DISPLAY_BACKLIGHT_PIN);		
 	} else
 	{
-		/* Enable PWM and set necessary pulse width */
-		// TODO: implement
+		/* Enable PWM and set necessary pulse width
+		 * Backlight pin is PD5 which is OC1A (Timer 1)
+		 * Use Fast-PWM mode, counting up to MAX in ICR1, pin reset at OCR
+		 * The timer itself is already set-up by beeper. ICR1 is set to 70
+		 */
+		if (0 == backlight_pwm_enabled)
+		{
+			TCCR1A |= (1 << COM1A1);			
+			backlight_pwm_enabled = 1;
+		}
+		OCR1A = backlight_level;
 	}
 	
 	return;	

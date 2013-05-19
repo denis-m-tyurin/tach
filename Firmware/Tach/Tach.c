@@ -26,10 +26,6 @@
 void start_timer0_tach();
 void stop_timer0_tach();
 
-/* LOCAL DEFINES */
-#define BEEPER_FREQ_60 60
-#define BEEPER_FREQ_70 70
-
 /* LOCAL GLOBAL VARS */
 uint32_t timer0_count = 0;
 uint32_t tach_pulse_count = 0;
@@ -65,7 +61,7 @@ int main(void)
 	
 	initDisplay();
 	displayClear();
-	display_set_backlight(DISPLAY_BACKLIGHT_ON);
+	display_set_backlight(BACKLIGHT_TOP);	
 	
 	/* Configure TOP and SIDE light switch pins */
 	DDRA |= (1 << PA7) | (1 << PA6);
@@ -108,15 +104,15 @@ int main(void)
 		switch(encoder_monitor_get_last_action())
 		{
 			case ENCODER_ACTION_RIGHT:
-				beeper_play_tone(BEEPER_FREQ_70, 40);
+			//	beeper_play_tone(40);
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_RIGHT , NULL);
 				break;
 			case ENCODER_ACTION_LEFT:
-				beeper_play_tone(BEEPER_FREQ_70, 40);
+			//	beeper_play_tone(40);
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_LEFT , NULL);
 				break;
 			case ENCODER_ACTION_BUTTON_PRESSED:
-				beeper_play_tone(BEEPER_FREQ_60, 400);
+			//	beeper_play_tone(400);
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_BUTTON_PRESSED , NULL);
 				break;				
 			case ENCODER_ACTION_NO_ACTION:
@@ -245,6 +241,7 @@ ISR(INT0_vect)
 		tach_pulse_count = 0;
 		
 		/* Calculate RPM */
+		
 		
 		/* Start Timer 0 counter */
 		timer0_count = 0;
