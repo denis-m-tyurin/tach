@@ -9,6 +9,7 @@
 #include "states.h"
 #include "utils.h"
 #include "display.h"
+#include "settings_manager.h"
 
 const char settings_backlight_intensity_str[] PROGMEM = "    ßÐÊÎÑÒÜ";
 
@@ -28,7 +29,7 @@ void state_settings_backlight_intensity_enter(void **pStateBuf)
 	pData = (settings_backlight_intensity_state_strings*) *pStateBuf;
 	pData->settings_backlight_intensity_str_tmp = utils_read_string_from_progmem(settings_backlight_intensity_str);
 	pData->view_mode = 1;
-	pData->tmp_backlight_intensity_setting = 70;
+	pData->tmp_backlight_intensity_setting = settings_manager_get_backlight_intensity();
 }
 
 void state_settings_backlight_intensity_exit(void **pStateBuf)
@@ -56,6 +57,12 @@ void state_settings_backlight_intensity_event_handler(uint8_t event, void **pSta
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
 			/* Switch view/enter mode */
 			pData->view_mode = (pData->view_mode == 0 ? 1 : 0);
+			
+			if (1 == pData->view_mode)
+			{
+				/* Switched back from edit mode. Push data to EEPROM */
+				settings_manager_set_backlight_intensity(pData->tmp_backlight_intensity_setting);
+			}
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:

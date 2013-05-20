@@ -9,31 +9,41 @@
 #include "states.h"
 #include "power_monitor.h"
 #include "display.h"
+#include "tach_monitor.h"
+
+typedef struct
+{
+	char first_line_buf[18];
+	char second_line_buf[18];	
+} main_state_data;
 
 void state_main_screen_state_enter(void **pStateBuf)
 {
 	displayClear();
+	*pStateBuf = malloc(sizeof(main_state_data));
 }
 
 void state_main_screen_state_exit(void **pStateBuf)
 {
-	
+	if (NULL != *pStateBuf)
+	{
+		free(*pStateBuf);
+	}
 }
 
 
 void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void *data)
 {	
-	char *out_buf = NULL;
+	main_state_data *pData = (main_state_data*) *pStateBuf;	
 	uint16_t voltage = 0;
 	
 	switch (event)
 	{
 		case TACH_EVENT_REDRAW_SCREEN:
+			snprintf(pData->first_line_buf, 16, "%u об/мин    ", tach_monitor_get_rpm());
 			voltage = power_monitor_get_voltage();
-			out_buf = (char*) malloc(17);
-			snprintf(out_buf, 16, "%.2u.%.2uV                 ", voltage / 66, ((voltage % 66) * 151) / 100);
-			displayPrintLine("REdRAW", out_buf);
-			free(out_buf);
+			snprintf(pData->second_line_buf, 16, "%.2u.%.2uV    ", voltage / 66, ((voltage % 66) * 151) / 100);			
+			displayPrintLine(pData->first_line_buf, pData->second_line_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Schedule next state */

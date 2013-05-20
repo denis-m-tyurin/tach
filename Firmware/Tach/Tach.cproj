@@ -64,7 +64,8 @@
     <RamSnippetAddress>0x20000000</RamSnippetAddress>
     <UncachedRange />
     <OverrideVtor>false</OverrideVtor>
-    <OverrideVtorValue>exception_table</OverrideVtorValue>
+    <OverrideVtorValue>
+    </OverrideVtorValue>
     <BootSegment>2</BootSegment>
     <com_atmel_avrdbg_tool_simulator>
       <ToolType xmlns="">com.atmel.avrdbg.tool.simulator</ToolType>
@@ -79,6 +80,7 @@
         <ssl>False</ssl>
       </Channel>
     </com_atmel_avrdbg_tool_simulator>
+    <eraseonlaunchrule>0</eraseonlaunchrule>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -191,10 +193,16 @@
     <Compile Include="state_settings_exit.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="state_settings_max_tach.c">
+    <Compile Include="state_settings_max_rpm.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="state_settings_max_tach.h">
+    <Compile Include="state_settings_max_rpm.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_min_rpm.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_min_rpm.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_parent.c">

@@ -9,7 +9,8 @@
 #include "state_side_light_switch.h"
 #include "state_settings_parent.h"
 #include "state_settings_tach_pulses.h"
-#include "state_settings_max_tach.h"
+#include "state_settings_min_rpm.h"
+#include "state_settings_max_rpm.h"
 #include "state_settings_backlight_intensity.h"
 #include "state_settings_backlight_timeout.h"
 #include "state_settings_voltage_comp.h"
@@ -53,10 +54,14 @@ TACH_STATE_T s_states[] = {
 		state_settings_tach_pulses_enter,
 		state_settings_tach_pulses_exit,
 		state_settings_tach_pulses_event_handler},		
-		{TACH_STATE_SETTINGS_MAX_TACH,
-		state_settings_max_tach_enter,
-		state_settings_max_tach_exit,
-		state_settings_max_tach_event_handler},		
+		{TACH_STATE_SETTINGS_MIN_RPM,
+		state_settings_min_rpm_enter,
+		state_settings_min_rpm_exit,
+		state_settings_min_rpm_event_handler},
+		{TACH_STATE_SETTINGS_MAX_RPM,
+		state_settings_max_rpm_enter,
+		state_settings_max_rpm_exit,
+		state_settings_max_rpm_event_handler},		
 		{TACH_STATE_SETTINGS_BACKLIGHT_INTENSITY,
 		state_settings_backlight_intensity_enter,
 		state_settings_backlight_intensity_exit,

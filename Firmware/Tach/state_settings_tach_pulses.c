@@ -9,6 +9,8 @@
 #include "states.h"
 #include "utils.h"
 #include "display.h"
+#include "tach_monitor.h"
+#include "settings_manager.h"
 
 const char settings_tach_pulses_str[] PROGMEM = "ÈÌÏÓËÜÑÎÂ/ÎÁÎĞÎÒ";
 
@@ -28,7 +30,7 @@ void state_settings_tach_pulses_enter(void **pStateBuf)
 	pData = (settings_tach_pulses_state_strings*) *pStateBuf;
 	pData->settings_tach_pulses_str_tmp = utils_read_string_from_progmem(settings_tach_pulses_str);
 	pData->view_mode = 1;
-	pData->tmp_pulses_setting = 1;
+	pData->tmp_pulses_setting = settings_manager_get_pulses_per_revolution();
 }
 
 void state_settings_tach_pulses_exit(void **pStateBuf)
@@ -55,10 +57,16 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
 			/* Switch view/enter mode */
 			pData->view_mode = (pData->view_mode == 0 ? 1 : 0);
+			
+			if (1 == pData->view_mode)
+			{
+				/* Switched back from edit mode. Push data to EEPROM */
+				settings_manager_set_pulses_per_revolution(pData->tmp_pulses_setting);
+			}			
 		
-			/* do not break here to redraw screen immediatelly */	
+			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "      %u      " : "     <%u>     "), pData->tmp_pulses_setting);		
+			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u :%uîá/ì" : "<%u> :%uîá/ì"), pData->tmp_pulses_setting, tach_monitor_get_rpm());
 			displayPrintLine(pData->settings_tach_pulses_str_tmp, pData->out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
@@ -70,7 +78,11 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 			else
 			{
 				/* otherwise, increase the counter */
-				if (pData->tmp_pulses_setting < 100) pData->tmp_pulses_setting++;
+				if (pData->tmp_pulses_setting < 100)
+				{
+					 pData->tmp_pulses_setting++;
+					 tach_monitor_init(pData->tmp_pulses_setting);
+				}
 			}
 			
 			break;
@@ -83,7 +95,11 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 			else
 			{
 				/* otherwise, decrease the counter */
-				if (pData->tmp_pulses_setting > 1) pData->tmp_pulses_setting--;
+				if (pData->tmp_pulses_setting > 1)
+				{
+					pData->tmp_pulses_setting--;
+					tach_monitor_init(pData->tmp_pulses_setting);
+				}
 			}			
 			break;		
 		default:

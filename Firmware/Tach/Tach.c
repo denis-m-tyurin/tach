@@ -33,7 +33,7 @@ uint32_t tach_pulse_count = 0;
 
 int main(void)
 {
-	uint8_t redraw_cycle = 0; /* Used to count sleep cycles to redraw screen every 0,5 sec */
+	uint8_t redraw_cycle = 0; /* Used to count sleep cycles to redraw screen every 0,25 sec */
 	TACH_STATE_ID_T scheduled_state; /* Used to store scheduled state */
 	
 	settings_manager_init();
@@ -42,7 +42,7 @@ int main(void)
 	
 	encoder_monitor_init();
 	
-	/* Beeper used the same timer as encoder monitor, therefore
+	/* Beeper use the same timer as encoder monitor, therefore
 	 * sound will only work together with encoder monitor and should
 	 * be initialized only after encoder */
 	beeper_init();
@@ -78,6 +78,7 @@ int main(void)
 	
 	/* Start tach counting */
 	/* Enable INT0 interruptions on rising edge */
+	tach_monitor_init(settings_manager_get_pulses_per_revolution());
 	tach_pulse_count = 0;
 	timer0_count = 0;
 	MCUCR |= (1 << ISC01) | (1 << ISC00);
@@ -89,8 +90,8 @@ int main(void)
 		
 		/* Main loop */
 		
-		/* Get current state to update screen every 0.5 sec */
-		if (50 == redraw_cycle)
+		/* Get current state to update screen every 0.25 sec */
+		if (25 == redraw_cycle)
 		{
 			tach_states_dispatch_event(TACH_EVENT_REDRAW_SCREEN, NULL);	
 			redraw_cycle = 0;
@@ -133,16 +134,7 @@ int main(void)
 		
 		/* sleep 0.01 sec */
 		_delay_ms(10);
-			
-		//sound_freq++;
-		//if (sound_freq == 255)
-		//{
-			//sound_freq = 0;
-		//}
-	
-		//ICR1 = sound_freq;
-		//OCR1B = sound_freq / 2;
-//		_delay_ms(1000);
+				
 		
 		/* Re-read temp */
 //		if (NULL != pBus)
@@ -174,7 +166,7 @@ int main(void)
 		//}
 		//one_wire_temperature_convert(pTempData, temperature);
 		
-		//tach_states_dispatch_event(TACH_EVENT_REDRAW_SCREEN, NULL);
+		
 	//	snprintf(buf1, 16, "%.2u.%.2uV   %c%d.%.2u    ", voltage/66, voltage % 66, (pTempData->is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'), pTempData->degree_base, pTempData->degree_mantissa / 100);
 	//snprintf(buf2, 16, "%lu %lu %d, %d           ", RPM_3 / 6, RPM_3 / 8, sound_freq, EncoderData / 4);
 	//	displayPrintLine(buf1, buf2);
@@ -202,10 +194,19 @@ void stop_timer0_tach()
 
 ISR(TIMER0_COMP_vect)
 {
-	/* This is called 61 times a second, i.e. 61 Hz
-	  * 16 000 000 (16Mhz sys clock) / 1024 (pre-scaler) / 256 (top) = 61 */
-
 	timer0_count++;
+	
+	if (976 <= timer0_count)
+	{
+		/* 976 = 250 000 / 256
+		 * there weren't pulses for a long time, which means RPM is
+		 * less than 600 even on engines with 1 pulse per revolution
+		 * thus, set RPM to 0 and reset pulse count
+		 */
+		tach_monitor_reset_rpm();
+		tach_pulse_count = 0;
+		timer0_count = 0;				
+	}
 }
 
 ISR(TIMER2_COMP_vect)
@@ -228,6 +229,13 @@ ISR(INT0_vect)
 	 * 1 pulse would take 0.015 sec	 
 	 * 
 	 * 1000 RPM = 60 / (0.15 / 10) / 4
+	 *
+	 * ALGORITHM:
+	 * 1. Count ticks
+	 * 2. Multiply ticks on 1 tick time
+	 * 3. Divide this time on pulses to count
+	 * 4. Divide 60 sec on pulses per revolution
+	 * 5. RPM = Divide the time from 4th item on time from 3rd
 	 */
 	
 	tach_pulse_count++;
@@ -241,10 +249,11 @@ ISR(INT0_vect)
 		tach_pulse_count = 0;
 		
 		/* Calculate RPM */
-		
+		tach_monitor_update_rpm((timer0_count*256) + TCNT0);
 		
 		/* Start Timer 0 counter */
 		timer0_count = 0;
+		TCNT0 = 0;
 		start_timer0_tach();
 	}
 	
