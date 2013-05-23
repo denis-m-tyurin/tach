@@ -18,7 +18,7 @@ typedef struct
 	char* settings_max_rpm_str_tmp;
 	char out_buf[18];
 	uint8_t view_mode;
-	uint8_t tmp_max_rpm_setting;
+	uint16_t tmp_max_rpm_setting;
 } settings_max_rpm_state_strings;
 
 void state_settings_max_rpm_enter(void **pStateBuf)

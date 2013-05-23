@@ -121,6 +121,6 @@ uint16_t settings_manager_get_min_rpm()
 
 void settings_manager_set_min_rpm(uint16_t minRPM)
 {
-	max_rpm = minRPM;
+	min_rpm = minRPM;
 	settings_manager_write_data();
 }
