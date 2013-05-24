@@ -15,6 +15,7 @@
 #define EEPROM_SETTING_PULSES_PER_REVOLUTION_ADDR 7
 #define EEPROM_SETTING_MAX_RPM_ADDR 8
 #define EEPROM_SETTING_MIN_RPM_ADDR 10
+#define EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR 12
 
 /* Other defines */
 #define EEPROM_MAGIC_NUMBER 0xABCD
@@ -26,6 +27,7 @@ static uint8_t backlight_intensity = BACKLIGHT_TOP;
 static uint8_t pulses_per_revolution = 1;
 static uint16_t max_rpm = 10000;
 static uint16_t min_rpm = 600;
+static uint16_t backlight_timeout = 30;
 
 void settings_manager_init()
 {
@@ -39,15 +41,7 @@ void settings_manager_init()
 		pulses_per_revolution = eeprom_read_byte((uint8_t *)EEPROM_SETTING_PULSES_PER_REVOLUTION_ADDR);
 		max_rpm = eeprom_read_word((void *)EEPROM_SETTING_MAX_RPM_ADDR);
 		min_rpm = eeprom_read_word((void *)EEPROM_SETTING_MIN_RPM_ADDR);
-				
-		//eeprom_read_block((uint8_t *)gwip,(void *)41,sizeof(gwip));
-		//eeprom_read_block((uint8_t *)udpsrvip,(void *)45,sizeof(udpsrvip));
-		//udpsrvport=eeprom_read_word((void *)49);
-		//alarmOn=eeprom_read_byte((uint8_t *)51);
-		//heartbeat_timeout_sec=eeprom_read_word((void *)52);
-		//dhcpOn=eeprom_read_byte((uint8_t *)54);
-		//eeprom_read_block((uint8_t *)myip,(void *)55,sizeof(myip));
-		//eeprom_read_block((char *)myname,(void *)59,sizeof(myname));
+		backlight_timeout = eeprom_read_word((void *)EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR);
 	}
 	else
 	{
@@ -68,7 +62,9 @@ void settings_manager_write_data()
 	eeprom_write_byte((uint8_t *) EEPROM_SETTING_PULSES_PER_REVOLUTION_ADDR, pulses_per_revolution);
 	eeprom_write_word((void *) EEPROM_SETTING_MAX_RPM_ADDR, max_rpm);
 	eeprom_write_word((void *) EEPROM_SETTING_MIN_RPM_ADDR, min_rpm);
+	eeprom_write_word((void *) EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR, backlight_timeout);
 }
+
 
 uint16_t settings_manager_get_voltage_compensation()
 {
@@ -122,5 +118,16 @@ uint16_t settings_manager_get_min_rpm()
 void settings_manager_set_min_rpm(uint16_t minRPM)
 {
 	min_rpm = minRPM;
+	settings_manager_write_data();
+}
+
+uint16_t settings_manager_get_backlight_timeout()
+{
+	return backlight_timeout;
+}
+
+void settings_manager_set_backlight_timeout(uint16_t backlightTimeout)
+{
+	backlight_timeout = backlightTimeout;
 	settings_manager_write_data();
 }

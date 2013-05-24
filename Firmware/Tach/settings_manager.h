@@ -12,5 +12,7 @@ uint16_t settings_manager_get_max_rpm();
 void settings_manager_set_max_rpm(uint16_t maxRPM);
 uint16_t settings_manager_get_min_rpm();
 void settings_manager_set_min_rpm(uint16_t minRPM);
+uint16_t settings_manager_get_backlight_timeout();
+void settings_manager_set_backlight_timeout(uint16_t backlightTimeout);
 
 #endif
