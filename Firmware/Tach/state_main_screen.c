@@ -16,13 +16,18 @@ typedef struct
 {
 	char first_line_buf[18];
 	char second_line_buf[18];
-	one_wire_temperature_data_t temperature_data;	
 } main_state_data;
+
+static one_wire_temperature_data_t tdata;
 
 void state_main_screen_state_enter(void **pStateBuf)
 {
 	displayClear();
 	*pStateBuf = malloc(sizeof(main_state_data));
+
+	tdata.degree_base = 0;
+	tdata.degree_mantissa = 0;
+	tdata.is_positive = ONE_WIRE_TEMPERATURE_POSITIVE;
 }
 
 void state_main_screen_state_exit(void **pStateBuf)
@@ -49,7 +54,7 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 			if (TEMP_MONITOR_CONVERSION_DONE == temp_conversion_status)
 			{
 				/* Read new temperature from the sensor */
-				temp_monitor_get_temperature(&(pData->temperature_data));				
+				temp_monitor_get_temperature(&tdata);
 			} 
 			else if (TEMP_MONITOR_CONVERSION_IDLE == temp_conversion_status)
 			{
@@ -64,9 +69,9 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 					 "%.2u.%.2uV   %c%.2u.%.2uC",
 					 voltage / 66,
 					 ((voltage % 66) * 151) / 100,
-					 (pData->temperature_data.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
-					 pData->temperature_data.degree_base,
-					 pData->temperature_data.degree_mantissa / 100);
+					 (tdata.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
+					 tdata.degree_base,
+					 tdata.degree_mantissa / 100);
 
 			displayPrintLine(pData->first_line_buf, pData->second_line_buf);
 
