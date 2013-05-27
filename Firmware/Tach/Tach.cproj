@@ -256,6 +256,12 @@
     <Compile Include="tach_monitor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="temp_monitor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="temp_monitor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="utils.c">
       <SubType>compile</SubType>
     </Compile>

@@ -10,11 +10,13 @@
 #include "power_monitor.h"
 #include "display.h"
 #include "tach_monitor.h"
+#include "temp_monitor.h"
 
 typedef struct
 {
 	char first_line_buf[18];
-	char second_line_buf[18];	
+	char second_line_buf[18];
+	one_wire_temperature_data_t temperature_data;	
 } main_state_data;
 
 void state_main_screen_state_enter(void **pStateBuf)
@@ -36,14 +38,38 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 {	
 	main_state_data *pData = (main_state_data*) *pStateBuf;	
 	uint16_t voltage = 0;
+	uint8_t temp_conversion_status = TEMP_MONITOR_CONVERSION_IDLE;
 	
 	switch (event)
 	{
 		case TACH_EVENT_REDRAW_SCREEN:
+
+			/* Check temp conversion status */
+			temp_conversion_status = temp_monitor_get_conversion_status();
+			if (TEMP_MONITOR_CONVERSION_DONE == temp_conversion_status)
+			{
+				/* Read new temperature from the sensor */
+				temp_monitor_get_temperature(&(pData->temperature_data));				
+			} 
+			else if (TEMP_MONITOR_CONVERSION_IDLE == temp_conversion_status)
+			{
+				/* Initiate new temperature conversion */
+				temp_monitor_start_conversion();
+			}
+
 			snprintf(pData->first_line_buf, 16, "%u об/мин    ", tach_monitor_get_rpm());
 			voltage = power_monitor_get_voltage();
-			snprintf(pData->second_line_buf, 16, "%.2u.%.2uV    ", voltage / 66, ((voltage % 66) * 151) / 100);			
+			snprintf(pData->second_line_buf, 
+					 16,
+					 "%.2u.%.2uV   %c%.2u.%.2uC",
+					 voltage / 66,
+					 ((voltage % 66) * 151) / 100,
+					 (pData->temperature_data.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
+					 pData->temperature_data.degree_base,
+					 pData->temperature_data.degree_mantissa / 100);
+
 			displayPrintLine(pData->first_line_buf, pData->second_line_buf);
+
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Schedule next state */

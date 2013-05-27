@@ -9,19 +9,22 @@
 #define F_CPU 16000000UL // 16 MHz
 #endif
 
+/* NEVER PULL-UP PD7 as it is GND'ed */
+#define PD7 #error
+
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/sleep.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "display.h"
-#include "one_wire.h"
 #include "states.h"
 #include "power_monitor.h"
 #include "encoder_monitor.h"
 #include "beeper.h"
 #include "settings_manager.h"
 #include "tach_monitor.h"
+#include "temp_monitor.h"
 
 void start_timer0_tach();
 void stop_timer0_tach();
@@ -29,6 +32,7 @@ void stop_timer0_tach();
 /* LOCAL GLOBAL VARS */
 uint32_t timer0_count = 0;
 uint32_t tach_pulse_count = 0;
+uint16_t onesec_pulse_count = 0;
 
 
 int main(void)
@@ -47,29 +51,18 @@ int main(void)
 	 * be initialized only after encoder */
 	beeper_init();
 	
+	temp_monitor_init();
 	
-//	char *buf1 = (char*) malloc(17);
-//	char *buf2 = (char*) malloc(17);
-//	one_wire_temperature_data_t* pTempData = malloc(sizeof(one_wire_temperature_data_t));
-//	uint16_t voltage = 0;
-//	uint16_t temperature = 0;
-//	uint16_t sound_gen = 0;
-//	one_wire_bus_data_t *pBus;
-	//uint8_t sound_freq = 0;
-	
-	/* NEVER PULL-UP PD7 as it is GND'ed */
+
 	
 	initDisplay();
 	displayClear();
-	display_set_backlight(BACKLIGHT_TOP);	
+	display_set_backlight(DISPLAY_BACKLIGHT_TOP);
+	display_set_timeout(settings_manager_get_backlight_timeout());
 	
 	/* Configure TOP and SIDE light switch pins */
 	DDRA |= (1 << PA7) | (1 << PA6);
 	PORTA &= ~((1 << PA6) | (1 << PA7));
-	
-	
-	/* Initialize 1-wire bus */
-//	pBus = 	one_wire_initialize_bus(ONE_WIRE_PORT_A, PA4);
 	
 	/* Show the main screen on start-up */
 	tach_states_set_state(TACH_STATE_MAIN_SCREEN);
@@ -87,7 +80,6 @@ int main(void)
 	
     while(1)
     {		
-		
 		/* Main loop */
 		
 		/* Get current state to update screen every 0.25 sec */
@@ -100,31 +92,43 @@ int main(void)
 		{
 			redraw_cycle++;
 		}
-		
+
 		/* Check if any Encoder events happened */
 		switch(encoder_monitor_get_last_action())
 		{
 			case ENCODER_ACTION_RIGHT:
 			//	beeper_play_tone(40);
+				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_RIGHT , NULL);
 				break;
 			case ENCODER_ACTION_LEFT:
 			//	beeper_play_tone(40);
+				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_LEFT , NULL);
 				break;
 			case ENCODER_ACTION_BUTTON_PRESSED:
 			//	beeper_play_tone(400);
+				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_BUTTON_PRESSED , NULL);
 				break;				
 			case ENCODER_ACTION_NO_ACTION:
 			default:
 				break;
 		}
-		
+
+		onesec_pulse_count++;
+		if (100 == onesec_pulse_count)
+		{
+			onesec_pulse_count = 0;
+			display_timeout_1sec_tick();
+		}
+
 		/* Check if any state switch is scheduled */
 		scheduled_state = tach_states_get_scheduled_state();
 		if (TACH_STATE_NO_STATE != scheduled_state)
 		{
+			/* Enable backlight just in case */
+			display_timeout_user_active();			
 			tach_states_set_state(scheduled_state);
 			
 			/* Immediately redraw the screen to show new state */
@@ -134,43 +138,6 @@ int main(void)
 		
 		/* sleep 0.01 sec */
 		_delay_ms(10);
-				
-		
-		/* Re-read temp */
-//		if (NULL != pBus)
-//		{
-	//		cli();
-		//	if (one_wire_check_presence(pBus))
-//			{
-				/* Good news - the sensor is here */
-				
-				/* Send SKIP ROM [CCh] */
-	//			one_wire_send_command(pBus, 0xCC);
-
-				/* Send CONVERT T [44h] */
-		//		one_wire_send_command_wait_done(pBus, 0x44, 200);
-
-			//	if (one_wire_check_presence(pBus))
-				//{
-					/* Send SKIP ROM [CCh] */
-//					one_wire_send_command(pBus, 0xCC);
-
-					/* Send READ SCRATCHPAD [BEh] */
-					//one_wire_send_command(pBus, 0xBE);
-
-					/* Read data */
-					//temperature = one_wire_receive_data(pBus);					
-				//}
-			//}				
-			//sei();
-		//}
-		//one_wire_temperature_convert(pTempData, temperature);
-		
-		
-	//	snprintf(buf1, 16, "%.2u.%.2uV   %c%d.%.2u    ", voltage/66, voltage % 66, (pTempData->is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'), pTempData->degree_base, pTempData->degree_mantissa / 100);
-	//snprintf(buf2, 16, "%lu %lu %d, %d           ", RPM_3 / 6, RPM_3 / 8, sound_freq, EncoderData / 4);
-	//	displayPrintLine(buf1, buf2);
-	
     }
 }
 
@@ -211,6 +178,8 @@ ISR(TIMER0_COMP_vect)
 
 ISR(TIMER2_COMP_vect)
 {
+	/* This is called ~1000 times a second, i.e. 1 kHz (976 times a second)
+	 * 16 000 000 (16Mhz sys clock) / 64 (pre-scaler) / 256 (top) */
 	encoder_monitor_handle_timer_int();
 	beeper_handle_timer_int();
 }

@@ -3,9 +3,13 @@
 #define F_CPU 16000000UL // 16 MHz
 #endif
 
+/* NEVER PULL-UP PD7 as it is GND'ed */
+#define PD7 #error
+
 #include "display.h"
 #include <avr/io.h>
 #include <util/delay.h>
+#include "settings_manager.h"
 
 /********************************************
  *      PIN CONFIGURATION                   *
@@ -66,10 +70,45 @@ static inline void delay_ms(uint16_t count);
 static inline void delay_us(uint16_t count);
 
 static uint8_t backlight_pwm_enabled = 0;
+static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
+static uint16_t backlight_remaining_timeot = 0;
 
 /********************************************
  *      PUBLIC FUNCTIONS                    *
  *******************************************/
+
+void display_set_timeout(uint16_t display_timeout)
+{
+	backlight_timeout = display_timeout;
+	backlight_remaining_timeot = backlight_timeout;
+}
+
+void display_timeout_user_active()
+{
+	if (0 == backlight_remaining_timeot)
+	{
+		/* Enable backlight again */
+		display_set_backlight(settings_manager_get_backlight_intensity());
+	}
+	backlight_remaining_timeot = backlight_timeout;
+}
+
+void display_timeout_1sec_tick()
+{
+	if (0 != backlight_remaining_timeot)
+	{
+		if (DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON != backlight_remaining_timeot)
+		{
+			backlight_remaining_timeot--;
+		}
+
+		if (0 == backlight_remaining_timeot)
+		{
+			display_set_backlight(DISPLAY_BACKLIGHT_OFF);
+		}
+	}	
+}
+
 void display_set_backlight( uint8_t backlight_level )
 {
 	/* Configure pin just in case */
@@ -85,7 +124,7 @@ void display_set_backlight( uint8_t backlight_level )
 		}
 		DISPLAY_BACKLIGHT_PORT &= ~(1 << DISPLAY_BACKLIGHT_PIN);		
 		
-	} else if (BACKLIGHT_TOP == backlight_level)
+	} else if (DISPLAY_BACKLIGHT_TOP == backlight_level)
 	{
 		/* Turn PWM off and set pin to 1 */
 		if (1 == backlight_pwm_enabled)

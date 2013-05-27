@@ -12,10 +12,12 @@
 #include "settings_manager.h"
 
 const char settings_backlight_timeout_str[] PROGMEM = "ВРЕМЯ ПОДСВЕТКИ";
+const char settings_backlight_always_on_str[] PROGMEM = "включена всегда";
 
 typedef struct 
 {
 	char* settings_backlight_timeout_str_tmp;
+	char* settings_backlight_always_on_str_tmp;
 	char out_buf[18];
 	uint8_t view_mode;
 	uint16_t tmp_backlight_timeout_setting;
@@ -29,6 +31,7 @@ void state_settings_backlight_timeout_enter(void **pStateBuf)
 	*pStateBuf = malloc(sizeof(settings_backlight_timeout_state_strings));
 	pData = (settings_backlight_timeout_state_strings*) *pStateBuf;
 	pData->settings_backlight_timeout_str_tmp = utils_read_string_from_progmem(settings_backlight_timeout_str);
+	pData->settings_backlight_always_on_str_tmp = utils_read_string_from_progmem(settings_backlight_always_on_str);
 	pData->view_mode = 1;
 	pData->tmp_backlight_timeout_setting = settings_manager_get_backlight_timeout();
 }
@@ -41,6 +44,10 @@ void state_settings_backlight_timeout_exit(void **pStateBuf)
 		{
 			free(pData->settings_backlight_timeout_str_tmp);
 		}
+		if (NULL != pData->settings_backlight_always_on_str_tmp)
+		{
+			free(pData->settings_backlight_always_on_str_tmp);
+		}		
 		if (NULL != *pStateBuf)
 		{
 			free(*pStateBuf);
@@ -62,12 +69,21 @@ void state_settings_backlight_timeout_event_handler(uint8_t event, void **pState
 			{
 				/* Switched back from edit mode. Push data to EEPROM */
 				settings_manager_set_backlight_timeout(pData->tmp_backlight_timeout_setting);
+				display_set_timeout(pData->tmp_backlight_timeout_setting);
 			}
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u сек       " : "<%u> сек       "), pData->tmp_backlight_timeout_setting);		
-			displayPrintLine(pData->settings_backlight_timeout_str_tmp, pData->out_buf);
+			if (DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON == pData->tmp_backlight_timeout_setting)
+			{
+				displayPrintLine(pData->settings_backlight_timeout_str_tmp, pData->settings_backlight_always_on_str_tmp);
+			}
+			else
+			{
+				snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u секунд       " : "<%u> секунд       "), pData->tmp_backlight_timeout_setting);
+				displayPrintLine(pData->settings_backlight_timeout_str_tmp, pData->out_buf);
+			}
+			
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			if (1 == pData->view_mode)
@@ -78,7 +94,7 @@ void state_settings_backlight_timeout_event_handler(uint8_t event, void **pState
 			else
 			{
 				/* otherwise, increase the counter */
-				pData->tmp_backlight_timeout_setting++;
+				if (pData->tmp_backlight_timeout_setting < DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON) pData->tmp_backlight_timeout_setting += 5;
 			}
 			
 			break;
@@ -91,7 +107,7 @@ void state_settings_backlight_timeout_event_handler(uint8_t event, void **pState
 			else
 			{
 				/* otherwise, decrease the counter */
-				if (pData->tmp_backlight_timeout_setting > 1) pData->tmp_backlight_timeout_setting--;
+				if (pData->tmp_backlight_timeout_setting > DISPLAY_BACKLIGHT_TIMEOUT_MIN_SEC) pData->tmp_backlight_timeout_setting -= 5;
 			}			
 			break;		
 		default:

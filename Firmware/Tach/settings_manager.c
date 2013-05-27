@@ -23,11 +23,11 @@
 static uint8_t magic_written = 0;
 
 static uint16_t voltage_compensation = 0;
-static uint8_t backlight_intensity = BACKLIGHT_TOP;
+static uint8_t backlight_intensity = DISPLAY_BACKLIGHT_TOP;
 static uint8_t pulses_per_revolution = 1;
 static uint16_t max_rpm = 10000;
 static uint16_t min_rpm = 600;
-static uint16_t backlight_timeout = 30;
+static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
 
 void settings_manager_init()
 {

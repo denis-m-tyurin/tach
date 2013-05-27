@@ -35,5 +35,6 @@ void one_wire_send_command(const one_wire_bus_data_t* pBus, const unsigned char 
 void one_wire_send_command_wait_done(const one_wire_bus_data_t* pBus, const unsigned char command, const uint16_t max_timeout_us);
 uint16_t one_wire_receive_data(const one_wire_bus_data_t* pBus);
 void one_wire_temperature_convert(one_wire_temperature_data_t* pTempData, uint16_t sourceData);
+bool one_wire_is_conversion_done(const one_wire_bus_data_t* pBus);
 
 #endif /* ONE_WIRE_H */

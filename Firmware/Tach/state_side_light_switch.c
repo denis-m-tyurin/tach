@@ -2,6 +2,9 @@
 #define F_CPU 16000000UL // 16 MHz
 #endif
 
+/* NEVER PULL-UP PD7 as it is GND'ed */
+#define PD7 #error
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <avr/pgmspace.h>

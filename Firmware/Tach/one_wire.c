@@ -4,6 +4,9 @@
 #define F_CPU 16000000UL // 16 MHz
 #endif
 
+/* NEVER PULL-UP PD7 as it is GND'ed */
+#define PD7 #error
+
 #include <avr/io.h>
 #include <util/delay.h>
 #include <stdlib.h>
@@ -21,20 +24,20 @@ one_wire_bus_data_t* one_wire_initialize_bus(one_wire_port_t port, int pin)
 	switch (pData->port)
 	{
 		case ONE_WIRE_PORT_A:
-		//	DDRA = 1 << pData->pin;
-		//	PORTA |= (1 << pData->pin);
+			DDRA |= 1 << pData->pin;
+			PORTA |= (1 << pData->pin);
 			break;
 		case ONE_WIRE_PORT_B:
-		//	DDRB = 1 << pData->pin;
-		//	PORTB |= (1 << pData->pin);
+			DDRB |= 1 << pData->pin;
+			PORTB |= (1 << pData->pin);
 			break;
 		case ONE_WIRE_PORT_C:
-		//	DDRC = 1 << pData->pin;
-		//	PORTC |= (1 << pData->pin);
+			DDRC |= 1 << pData->pin;
+			PORTC |= (1 << pData->pin);
 			break;
 		case ONE_WIRE_PORT_D:
-		//	DDRD = 1 << pData->pin;
-		//	PORTD |= (1 << pData->pin);
+			DDRD |= 1 << pData->pin;
+			PORTD |= (1 << pData->pin);
 			break;
 
 		default:
@@ -253,34 +256,51 @@ void one_wire_send_command_wait_done(const one_wire_bus_data_t* pBus, const unsi
 	switch (pBus->port)
 	{
 	case ONE_WIRE_PORT_A:
-		while (((PINA & (1 << pBus->pin)) == 0x0) && (wait_loops != max_timeout_us))
+		while (one_wire_is_conversion_done(pBus) == false && wait_loops != max_timeout_us)
 		{
 			_delay_us(1);
 			//wait_loops++;
 		}
 		break;
 	case ONE_WIRE_PORT_B:
-		while (((PINB & (1 << pBus->pin)) == 0x0) && (wait_loops != max_timeout_us))
+		while (one_wire_is_conversion_done(pBus) && wait_loops != max_timeout_us)
 		{
 			_delay_us(1);
 			//wait_loops++;
 		}
 		break;
 	case ONE_WIRE_PORT_C:
-		while (((PINC & (1 << pBus->pin)) == 0x0) && (wait_loops != max_timeout_us))
+		while (one_wire_is_conversion_done(pBus) && wait_loops != max_timeout_us)
 		{
 			_delay_us(1);
 			//wait_loops++;
 		}
 		break;
 	case ONE_WIRE_PORT_D:
-		while (((PIND & (1 << pBus->pin)) == 0x0) && (wait_loops != max_timeout_us))
+		while (one_wire_is_conversion_done(pBus) && wait_loops != max_timeout_us)
 		{
 			_delay_us(1);
 			//wait_loops++;
 		}
 		break;
 	}
+}
+
+bool one_wire_is_conversion_done(const one_wire_bus_data_t* pBus)
+{
+	/* As per the spec remote device will hold "0" on the bus until handling is in progress, and release the bus to "1" when done */
+	switch (pBus->port)
+	{
+		case ONE_WIRE_PORT_A:
+			return (((PINA & (1 << pBus->pin)) == 0x0) ? false : true);				
+		case ONE_WIRE_PORT_B:
+			return (((PINB & (1 << pBus->pin)) == 0x0) ? false : true);			
+		case ONE_WIRE_PORT_C:
+			return (((PINC & (1 << pBus->pin)) == 0x0) ? false : true);	
+		case ONE_WIRE_PORT_D:
+			return (((PIND & (1 << pBus->pin)) == 0x0) ? false : true);	
+	}
+	return false;
 }
 
 
