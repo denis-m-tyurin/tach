@@ -12,12 +12,6 @@
 
 static one_wire_bus_data_t* pBus = NULL;
 
-#define SENSOR_NOT_CONNECTED 0
-#define SENSOR_CONNECTED 1
-
-static uint8_t sensor_connected = SENSOR_NOT_CONNECTED;
-
-
 static volatile uint8_t conversion_state = TEMP_MONITOR_CONVERSION_IDLE;
 
 void temp_monitor_init()
@@ -30,7 +24,6 @@ void temp_monitor_init()
 		if (one_wire_check_presence(pBus))
 		{
 			/* Good news - the sensor is here */
-			sensor_connected = SENSOR_CONNECTED;
 			conversion_state = TEMP_MONITOR_CONVERSION_IDLE;
 		}
 	}
@@ -38,15 +31,18 @@ void temp_monitor_init()
 
 void temp_monitor_start_conversion()
 {
-	if ((SENSOR_CONNECTED == sensor_connected) && (conversion_state == TEMP_MONITOR_CONVERSION_IDLE))
+	if ((conversion_state == TEMP_MONITOR_CONVERSION_IDLE))
 	{
-		/* Send SKIP ROM [CCh] */
-		one_wire_send_command(pBus, 0xCC);
+		if (one_wire_check_presence(pBus))
+		{
+			/* Send SKIP ROM [CCh] */
+			one_wire_send_command(pBus, 0xCC);
 		
-		/* Send CONVERT T [44h] */
-		one_wire_send_command(pBus, 0x44);
+			/* Send CONVERT T [44h] */
+			one_wire_send_command(pBus, 0x44);
 		
-		conversion_state = TEMP_MONITOR_CONVERSION_IN_PROGRESS;
+			conversion_state = TEMP_MONITOR_CONVERSION_IN_PROGRESS;
+		}
 	}
 }
 
@@ -68,11 +64,16 @@ bool temp_monitor_get_temperature(one_wire_temperature_data_t *pTempData)
 {
 	uint16_t sensor_data = 0;
 	
-	if ((TEMP_MONITOR_CONVERSION_DONE != conversion_state) || (SENSOR_CONNECTED != sensor_connected) || (NULL == pTempData))
+	if ((TEMP_MONITOR_CONVERSION_DONE != conversion_state) || (NULL == pTempData))
 	{
 		return false;
 	}
 	
+	if (!one_wire_check_presence(pBus))
+	{
+		return false;
+	}
+
 	/* Read temp from the sensor */
 	
 	/* Send SKIP ROM [CCh] */

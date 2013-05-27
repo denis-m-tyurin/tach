@@ -66,7 +66,7 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u :%u об/м" : "<%u> :%u об/м"), pData->tmp_pulses_setting, tach_monitor_get_rpm());
+			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u :%u об/м       " : "<%u> :%u об/м     "), pData->tmp_pulses_setting, tach_monitor_get_rpm());
 			displayPrintLine(pData->settings_tach_pulses_str_tmp, pData->out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:

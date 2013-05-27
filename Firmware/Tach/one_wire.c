@@ -24,8 +24,8 @@ one_wire_bus_data_t* one_wire_initialize_bus(one_wire_port_t port, int pin)
 	switch (pData->port)
 	{
 		case ONE_WIRE_PORT_A:
-			//DDRA |= 1 << pData->pin;
-			//PORTA |= (1 << pData->pin);
+			DDRA |= 1 << pData->pin;
+			PORTA |= (1 << pData->pin);
 			break;
 		case ONE_WIRE_PORT_B:
 			DDRB |= 1 << pData->pin;

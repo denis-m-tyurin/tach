@@ -12,7 +12,7 @@
 #include "settings_manager.h"
 
 const char settings_backlight_timeout_str[] PROGMEM = "ВРЕМЯ ПОДСВЕТКИ";
-const char settings_backlight_always_on_str[] PROGMEM = "включена всегда";
+const char settings_backlight_always_on_str[] PROGMEM = "включена всегда ";
 
 typedef struct 
 {
@@ -80,7 +80,7 @@ void state_settings_backlight_timeout_event_handler(uint8_t event, void **pState
 			}
 			else
 			{
-				snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u секунд       " : "<%u> секунд       "), pData->tmp_backlight_timeout_setting);
+				snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u секунд        " : "<%u> секунд       "), pData->tmp_backlight_timeout_setting);
 				displayPrintLine(pData->settings_backlight_timeout_str_tmp, pData->out_buf);
 			}
 			

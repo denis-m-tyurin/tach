@@ -11,8 +11,8 @@
 #include "display.h"
 
 const char top_light_str[] PROGMEM = " “ŒœŒ¬€… Œ√ŒÕ‹";
-const char top_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ>";
-const char top_light_on_str[] PROGMEM = "    <√Œ–»“>   ";
+const char top_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ>   ";
+const char top_light_on_str[] PROGMEM = "    <√Œ–»“>     ";
 
 /* Top light switch is PA7 normally pulled down */
 

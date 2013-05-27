@@ -65,13 +65,13 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 			snprintf(pData->first_line_buf, 16, "%u об/мин    ", tach_monitor_get_rpm());
 			voltage = power_monitor_get_voltage();
 			snprintf(pData->second_line_buf, 
-					 16,
-					 "%.2u.%.2uV   %c%.2u.%.2uC",
+					 17,
+					 "%.2u.%.2uV    %c%.2u.%.1uC",
 					 voltage / 66,
 					 ((voltage % 66) * 151) / 100,
 					 (tdata.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
 					 tdata.degree_base,
-					 tdata.degree_mantissa / 100);
+					 tdata.degree_mantissa / 1000);
 
 			displayPrintLine(pData->first_line_buf, pData->second_line_buf);
 

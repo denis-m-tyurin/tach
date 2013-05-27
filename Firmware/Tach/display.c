@@ -177,7 +177,8 @@ void initDisplay()
 	if (0 == DISPLAY_DATA_PINS_INVERT )
 	{
 		/* No need to invert data in the port */
-		// TODO: implement		
+		// TODO: implement	
+
 	} else
 	{		
 		buf = ((DISPLAY_COMMAND_FUNCTION_SET | DISPLAY_DATA_LENGTH_8BIT) >> 4);
@@ -411,16 +412,38 @@ char displayTranslateSymb(const char symb)
 				return 0x62;
 		case 'ß':
 				return 0xB1;
+		case 'à':
+				return 0x61;
 		case 'á':
 				return 0xb2;
+		case 'â':
+				return 0xb3;
+		case 'ã':
+				return 0xb4;
+		case 'ä':
+				return 0xe3;
+		case 'å':
+				return 0x65;		
 		case 'è':
 				return 0xb8;
+		case 'ê':
+				return 0xba;
+		case 'ë':
+				return 0xbb;
 		case 'ì':
 				return 0xbc;
 		case 'í':
 				return 0xbd;
 		case 'î':
 				return 0x6f;
+		case 'ñ':
+				return 0x63;
+		case 'ó':
+				return 0x79;
+		case '÷':
+				return 0xc0;
+		case 'ş':
+				return 0xc6;
 		default:
 			break;
 	}
