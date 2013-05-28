@@ -229,12 +229,6 @@
     <Compile Include="state_side_light_switch.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="state_tach_advanced.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="state_tach_advanced.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="state_top_light_switch.c">
       <SubType>compile</SubType>
     </Compile>

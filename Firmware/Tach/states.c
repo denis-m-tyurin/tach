@@ -3,7 +3,6 @@
 
 /* include all the states */
 #include "state_main_screen.h"
-#include "state_tach_advanced.h"
 #include "state_voltage_advanced.h"
 #include "state_top_light_switch.h"
 #include "state_side_light_switch.h"
@@ -30,10 +29,6 @@ TACH_STATE_T s_states[] = {
 		state_main_screen_state_enter,
 		state_main_screen_state_exit,
 		state_main_screen_state_event_handler},
-		{TACH_STATE_TACH_ADVANCED,
-		state_tach_advanced_state_enter,
-		state_tach_advanced_state_exit,
-		state_tach_advanced_state_event_handler},
 		{TACH_STATE_VOLTAGE_ADVANCED,
 		state_voltage_advanced_state_enter,
 		state_voltage_advanced_state_exit,

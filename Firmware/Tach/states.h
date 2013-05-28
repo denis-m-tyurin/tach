@@ -8,8 +8,6 @@
  *
  *	< MAIN SCREEN (tach, voltage, temp)			>
  *				|
- *	< TACH ADVANCED (tach with pseudo-graph)	>
- *				|
  *	< VOLTAGE ADVANCED (v with pseudo-graph)	>
  *				| 
  *	< ONBOARD TOP LIGHT SWITCH					>
@@ -38,7 +36,6 @@ typedef enum
 {
 	TACH_STATE_NO_STATE = 0,
 	TACH_STATE_MAIN_SCREEN,
-	TACH_STATE_TACH_ADVANCED,
 	TACH_STATE_VOLTAGE_ADVANCED,
 	TACH_STATE_TOP_LIGHT_SWITCH,
 	TACH_STATE_SIDE_LIGHT_SWITCH,
