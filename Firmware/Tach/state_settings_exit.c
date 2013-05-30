@@ -34,7 +34,7 @@ void state_settings_exit_event_handler(uint8_t event, void **pStateBuf, void *da
 	{
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
 			/* jump into upper level */
-			tach_states_schedule_state(tach_states_get_next_state());		
+			tach_states_schedule_state(TACH_STATE_MAIN_SCREEN);		
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:		
 			displayPrintLine(settings_str_tmp, " ");

@@ -65,7 +65,7 @@ void state_voltage_advanced_state_event_handler(uint8_t event, void **pStateBuf,
 							DISPLAY_LINE_SIZE+1,
 							"%.2u.%.2uV",							
 							voltage / 66,
-							((voltage % 66) * 151) / 1000);
+							((voltage % 66) * 151) / 100);
 					pData->second_line_buf[DISPLAY_LINE_SIZE] = 0;
 				
 					for (voltage_render_counter = 0; voltage_render_counter < DISPLAY_LINE_SIZE; voltage_render_counter++)

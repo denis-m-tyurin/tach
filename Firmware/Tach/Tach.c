@@ -25,6 +25,7 @@
 #include "settings_manager.h"
 #include "tach_monitor.h"
 #include "temp_monitor.h"
+#include "alarm_monitor.h"
 
 void start_timer0_tach();
 void stop_timer0_tach();
@@ -76,6 +77,8 @@ int main(void)
 	GICR |= (1 << INT0);
 	start_timer0_tach();
 	
+	alarm_monitor_init();
+	
     while(1)
     {		
 		/* Main loop */
@@ -117,7 +120,25 @@ int main(void)
 		onesec_pulse_count++;
 		if (100 == onesec_pulse_count)
 		{
-			onesec_pulse_count = 0;
+			onesec_pulse_count = 0;			
+			switch (alarm_monitor_1sec_tick_check_alarm())
+			{
+				case ALARM_MIN_RPM:
+					tach_states_schedule_state(TACH_STATE_ALARM_MIN_RPM);
+					break;
+				case ALARM_MAX_RPM:
+					tach_states_schedule_state(TACH_STATE_ALARM_MAX_RPM);
+					break;					
+				case ALARM_MIN_VOLTAGE:
+					tach_states_schedule_state(TACH_STATE_ALARM_MIN_VOLTAGE);
+					break;
+				case ALARM_MAX_VOLTAGE:
+					tach_states_schedule_state(TACH_STATE_ALARM_MAX_VOLTAGE);
+					break;	
+				default:
+					break;
+			}
+			
 			display_timeout_1sec_tick();
 		}
 

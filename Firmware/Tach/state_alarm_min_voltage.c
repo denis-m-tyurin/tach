@@ -10,6 +10,7 @@
 #include "utils.h"
 #include "display.h"
 #include "settings_manager.h"
+#include "alarm_monitor.h"
 
 const char alarm_min_voltage_str[] PROGMEM = "ÍÈÇÊÎÅ ÍÀÏÐßÆ-Å";
 
@@ -50,9 +51,16 @@ void state_alarm_min_voltage_event_handler(uint8_t event, void **pStateBuf, void
 	{
 		case TACH_EVENT_ENCODER_BUTTON_PRESSED:
 			/* return to the previous state */			
+			alarm_monitor_postpone_alarm(ALARM_MIN_VOLTAGE);
 			tach_states_schedule_state(tach_states_get_past_state());
+			break;
  		case TACH_EVENT_REDRAW_SCREEN:
-			//snprintf(pData->out_buf, DISPLAY_LINE_SIZE+1, (pData->view_mode == 1 ? "   %.2u.%.2uV" : "   <%.2u.%.2u>V"), pData->tmp_max_voltage_setting / 66,((pData->tmp_max_voltage_setting % 66) * 151) / 100);
+			display_timeout_user_active();
+			if (ALARM_STATE_ARMED == alarm_get_alarm_state(ALARM_MIN_VOLTAGE))
+			{
+				tach_states_schedule_state(tach_states_get_past_state());
+				break;
+			}
 			pData->out_buf[DISPLAY_LINE_SIZE] = 0;
 			displayPrintLine(pData->alarm_min_voltage_str_tmp, pData->out_buf);
 			break;		

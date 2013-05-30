@@ -127,6 +127,12 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="alarm_monitor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="alarm_monitor.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="beeper.c">
       <SubType>compile</SubType>
     </Compile>

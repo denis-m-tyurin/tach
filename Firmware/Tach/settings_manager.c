@@ -30,8 +30,8 @@ static uint8_t pulses_per_revolution = 1;
 static uint16_t max_rpm = 10000;
 static uint16_t min_rpm = 600;
 static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
-static uint16_t max_voltage = 900;
-static uint16_t min_voltage = 10;
+static uint16_t max_voltage = 990;
+static uint16_t min_voltage = 695;
 
 void settings_manager_init()
 {

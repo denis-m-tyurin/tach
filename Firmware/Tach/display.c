@@ -385,6 +385,10 @@ char displayTranslateSymb(const char symb)
 				return 0xE0;
 		case 'Å':
 				return 0x45;
+		case 'Æ':
+				return 0xA3;
+		case 'Ç':
+				return 0xA4;
 		case 'È':
 				return 0xA5;
 		case 'É':
