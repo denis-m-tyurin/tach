@@ -233,6 +233,15 @@ void displayPrintString(const char *string)
 		displaySendData(displayTranslateSymb(string[counter]));
 		counter++;
 	}
+	
+	/* If string is less than line size, print spaces to overwrite old data */
+	if (counter < DISPLAY_LINE_SIZE)
+	{
+		for (;counter<DISPLAY_LINE_SIZE; counter++)
+		{
+			displaySendData(' ');
+		}
+	}
 }
 
 void displayPrintLine(const char *line1, const char* line2)

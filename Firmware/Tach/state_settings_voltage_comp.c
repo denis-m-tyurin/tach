@@ -17,7 +17,7 @@ const char settings_voltage_comp_str[] PROGMEM = "ÏÎÄÑÒÐÎÉÊÀ ÂÎËÜÒ";
 typedef struct 
 {
 	char* settings_voltage_comp_str_tmp;
-	char out_buf[18];
+	char out_buf[DISPLAY_LINE_SIZE+1];
 	uint8_t view_mode;
 	int16_t voltage_compensation_setting;
 } settings_voltage_comp_state_strings;
@@ -67,7 +67,8 @@ void state_settings_voltage_comp_event_handler(uint8_t event, void **pStateBuf, 
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
 			voltage = power_monitor_get_voltage();
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%.2u.%.2uV   %+i         " : "%.2u.%.2uV   <%+i>        "), voltage / 66 , ((voltage % 66) * 151) / 100, pData->voltage_compensation_setting);		
+			snprintf(pData->out_buf, DISPLAY_LINE_SIZE+1, (pData->view_mode == 1 ? "%.2u.%.2uV   %+i" : "%.2u.%.2uV   <%+i>"), voltage / 66 , ((voltage % 66) * 151) / 100, pData->voltage_compensation_setting);		
+			pData->out_buf[DISPLAY_LINE_SIZE] = 0;
 			displayPrintLine(pData->settings_voltage_comp_str_tmp, pData->out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:

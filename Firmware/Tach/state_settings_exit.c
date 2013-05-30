@@ -37,7 +37,7 @@ void state_settings_exit_event_handler(uint8_t event, void **pStateBuf, void *da
 			tach_states_schedule_state(tach_states_get_next_state());		
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:		
-			displayPrintLine(settings_str_tmp, "                ");
+			displayPrintLine(settings_str_tmp, " ");
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Jump to the first settings state */

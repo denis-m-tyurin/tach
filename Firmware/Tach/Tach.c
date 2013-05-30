@@ -52,9 +52,7 @@ int main(void)
 	beeper_init();
 	
 	temp_monitor_init();
-	
-
-	
+		
 	initDisplay();
 	displayClear();
 	display_set_backlight(DISPLAY_BACKLIGHT_TOP);

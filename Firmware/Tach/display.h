@@ -3,6 +3,8 @@
 
 #include <stdio.h>
 
+#define DISPLAY_LINE_SIZE 16
+
 /* Depends on ICR1 which is used for beeper, therefore is adjusted for specific freq */
 #define DISPLAY_BACKLIGHT_TOP 70
 #define DISPLAY_BACKLIGHT_OFF 0

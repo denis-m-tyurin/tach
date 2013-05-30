@@ -14,11 +14,18 @@
 #include "state_settings_backlight_timeout.h"
 #include "state_settings_voltage_comp.h"
 #include "state_settings_exit.h"
+#include "state_settings_max_voltage.h"
+#include "state_settings_min_voltage.h"
+#include "state_alarm_min_rpm.h"
+#include "state_alarm_max_rpm.h"
+#include "state_alarm_min_voltage.h"
+#include "state_alarm_max_voltage.h"
 
 static void *pCurrentStateBuf = NULL;
 
 static TACH_STATE_ID_T s_current_state = TACH_STATE_NO_STATE;
 static TACH_STATE_ID_T s_scheduled_state = TACH_STATE_NO_STATE;
+static TACH_STATE_ID_T s_past_state = TACH_STATE_NO_STATE;
 
 TACH_STATE_T s_states[] = {
 		{TACH_STATE_NO_STATE,
@@ -65,6 +72,14 @@ TACH_STATE_T s_states[] = {
 		state_settings_backlight_timeout_enter,
 		state_settings_backlight_timeout_exit,
 		state_settings_backlight_timeout_event_handler},
+		{TACH_STATE_SETTINGS_MIN_VOLTAGE,
+		state_settings_min_voltage_enter,
+		state_settings_min_voltage_exit,
+		state_settings_min_voltage_event_handler},
+		{TACH_STATE_SETTINGS_MAX_VOLTAGE,
+		state_settings_max_voltage_enter,
+		state_settings_max_voltage_exit,
+		state_settings_max_voltage_event_handler},		
 		{TACH_STATE_SETTINGS_VOLTAGE_COMP,
 		state_settings_voltage_comp_enter,
 		state_settings_voltage_comp_exit,
@@ -73,6 +88,22 @@ TACH_STATE_T s_states[] = {
 		state_settings_exit_enter,
 		state_settings_exit_exit,
 		state_settings_exit_event_handler},		
+		{TACH_STATE_ALARM_MIN_RPM,
+		state_alarm_min_rpm_enter,
+		state_alarm_min_rpm_exit,
+		state_alarm_min_rpm_event_handler},		
+		{TACH_STATE_ALARM_MAX_RPM,
+		state_alarm_max_rpm_enter,
+		state_alarm_max_rpm_exit,
+		state_alarm_max_rpm_event_handler},
+		{TACH_STATE_ALARM_MIN_VOLTAGE,
+		state_alarm_min_voltage_enter,
+		state_alarm_min_voltage_exit,
+		state_alarm_min_voltage_event_handler},
+		{TACH_STATE_ALARM_MAX_VOLTAGE,
+		state_alarm_max_voltage_enter,
+		state_alarm_max_voltage_exit,
+		state_alarm_max_voltage_event_handler},
 };
 
 void tach_states_set_state(TACH_STATE_ID_T state_id)
@@ -91,6 +122,7 @@ void tach_states_set_state(TACH_STATE_ID_T state_id)
 		}
 	
 		/* Init the new state */
+		s_past_state = s_current_state;
 		s_current_state = state_id;
 		s_states[s_current_state].state_enter(&pCurrentStateBuf);
 	}
@@ -132,6 +164,12 @@ TACH_STATE_ID_T tach_states_get_scheduled_state()
 	TACH_STATE_ID_T scheduled_state = s_scheduled_state;
 	s_scheduled_state = TACH_STATE_NO_STATE;
 	return scheduled_state;
+}
+
+
+TACH_STATE_ID_T tach_states_get_past_state()
+{
+	return s_past_state;
 }
 
 void tach_states_dispatch_event(uint8_t event, void *data)

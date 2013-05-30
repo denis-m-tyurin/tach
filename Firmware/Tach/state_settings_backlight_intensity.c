@@ -16,7 +16,7 @@ const char settings_backlight_intensity_str[] PROGMEM = "    ßÐÊÎÑÒÜ";
 typedef struct 
 {
 	char* settings_backlight_intensity_str_tmp;
-	char tmp_buf[18];
+	char tmp_buf[DISPLAY_LINE_SIZE+1];
 	uint8_t view_mode;
 	uint8_t tmp_backlight_intensity_setting;	
 } settings_backlight_intensity_state_strings;
@@ -66,16 +66,15 @@ void state_settings_backlight_intensity_event_handler(uint8_t event, void **pSta
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			//snprintf(pData->tmp_buf, 18, (pData->view_mode == 1 ? "      %u      " : "     <%u>     "), pData->tmp_backlight_intensity_setting);
 			
-			for (tmp_counter = 1; tmp_counter < 15; tmp_counter++)
+			for (tmp_counter = 1; tmp_counter < DISPLAY_LINE_SIZE-1; tmp_counter++)
 			{				
 				pData->tmp_buf[tmp_counter] = (  tmp_counter * 5 <= pData->tmp_backlight_intensity_setting ? '|' : ' ');
 			}
 			pData->tmp_buf[0] = (0 == pData->view_mode ? '<' : ' ');
-			pData->tmp_buf[15] = (0 == pData->view_mode ? '>' : ' ');
+			pData->tmp_buf[DISPLAY_LINE_SIZE-1] = (0 == pData->view_mode ? '>' : ' ');
 
-			pData->tmp_buf[16] = 0;
+			pData->tmp_buf[DISPLAY_LINE_SIZE] = 0;
 			
 			displayPrintLine(pData->settings_backlight_intensity_str_tmp, pData->tmp_buf);
 			break;

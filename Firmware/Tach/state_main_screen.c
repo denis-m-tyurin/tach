@@ -15,8 +15,8 @@
 
 typedef struct
 {
-	char first_line_buf[18];
-	char second_line_buf[18];
+	char first_line_buf[DISPLAY_LINE_SIZE+1];
+	char second_line_buf[DISPLAY_LINE_SIZE+1];
 	uint8_t main_screen_view_mode;
 	one_wire_temperature_data_t tdata;
 } main_state_data;
@@ -63,7 +63,6 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 			/* Switch view modes */
 			pData->main_screen_view_mode = (pData->main_screen_view_mode == MAIN_SCREEN_BASIC_VIEW_MODE ? MAIN_SCREEN_TACH_BASIC_VIEW_MODE : (pData->main_screen_view_mode == MAIN_SCREEN_TACH_BASIC_VIEW_MODE ? MAIN_SCREEN_TACH_GRAPH_VIEW_MODE : MAIN_SCREEN_BASIC_VIEW_MODE));
 
-			displayClear();
 			/* do not break here to redraw screen immediately */
 		case TACH_EVENT_REDRAW_SCREEN:
 
@@ -88,51 +87,35 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 			switch (pData->main_screen_view_mode)
 			{
 				case MAIN_SCREEN_BASIC_VIEW_MODE:
-					snprintf(pData->first_line_buf, 16, "%u об/мин    ", rpm);
+					snprintf(pData->first_line_buf, DISPLAY_LINE_SIZE + 1, "%u об/мин", rpm);
+					pData->first_line_buf[DISPLAY_LINE_SIZE] = 0;
 					voltage = power_monitor_get_voltage();
 					snprintf(pData->second_line_buf,
-							17,
+							DISPLAY_LINE_SIZE+1,
 							"%.2u.%.2uV    %c%.2u.%.1uC",
 							voltage / 66,
 							((voltage % 66) * 151) / 100,
 							(pData->tdata.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
 							pData->tdata.degree_base,
 							pData->tdata.degree_mantissa / 1000);
+					pData->second_line_buf[DISPLAY_LINE_SIZE] = 0;
 
 					displayPrintLine(pData->first_line_buf, pData->second_line_buf);
 					break;
 				case MAIN_SCREEN_TACH_BASIC_VIEW_MODE:
-					for (tach_render_counter = 0; tach_render_counter < 16; tach_render_counter++)
-					{
-						if (rpm < settings_manager_get_min_rpm())
-						{
-							rpm = settings_manager_get_min_rpm();
-						}
-						else if (rpm > settings_manager_get_max_rpm())
-						{
-							rpm = settings_manager_get_max_rpm();
-						}
-						
-						rpm_delta = (settings_manager_get_max_rpm() - settings_manager_get_min_rpm()) / 16;
-						
-						pData->first_line_buf[tach_render_counter] = (rpm >= (settings_manager_get_min_rpm() + rpm_delta*tach_render_counter) ? '|' : ' ');
-					}
-							
 					voltage = power_monitor_get_voltage();
 					snprintf(pData->second_line_buf,
-							17,
-							"%u %.2u.%.1u %c%.2u.%.1u    ",
+							DISPLAY_LINE_SIZE+1,
+							"%u %.2u.%.1u %c%.2u.%.1u",
 							rpm,
 							voltage / 66,
 							((voltage % 66) * 151) / 1000,
 							(pData->tdata.is_positive == ONE_WIRE_TEMPERATURE_POSITIVE ? '+' : '-'),
 							pData->tdata.degree_base,
 							pData->tdata.degree_mantissa / 1000);
+							pData->second_line_buf[DISPLAY_LINE_SIZE] = 0;
 
-					displayPrintLine(pData->first_line_buf, pData->second_line_buf);
-					break;
-				case MAIN_SCREEN_TACH_GRAPH_VIEW_MODE:					
-					for (tach_render_counter = 0; tach_render_counter < 16; tach_render_counter++)
+					for (tach_render_counter = 0; tach_render_counter < DISPLAY_LINE_SIZE; tach_render_counter++)
 					{
 						if (rpm < settings_manager_get_min_rpm())
 						{
@@ -143,7 +126,26 @@ void state_main_screen_state_event_handler(uint8_t event, void **pStateBuf, void
 							rpm = settings_manager_get_max_rpm();
 						}
 						
-						rpm_delta = (settings_manager_get_max_rpm() - settings_manager_get_min_rpm()) / 16;
+						rpm_delta = (settings_manager_get_max_rpm() - settings_manager_get_min_rpm()) / DISPLAY_LINE_SIZE;
+						
+						pData->first_line_buf[tach_render_counter] = (rpm >= (settings_manager_get_min_rpm() + rpm_delta*tach_render_counter) ? '|' : ' ');
+					}							
+					
+					displayPrintLine(pData->first_line_buf, pData->second_line_buf);
+					break;
+				case MAIN_SCREEN_TACH_GRAPH_VIEW_MODE:					
+					for (tach_render_counter = 0; tach_render_counter < DISPLAY_LINE_SIZE; tach_render_counter++)
+					{
+						if (rpm < settings_manager_get_min_rpm())
+						{
+							rpm = settings_manager_get_min_rpm();
+						}
+						else if (rpm > settings_manager_get_max_rpm())
+						{
+							rpm = settings_manager_get_max_rpm();
+						}
+						
+						rpm_delta = (settings_manager_get_max_rpm() - settings_manager_get_min_rpm()) / DISPLAY_LINE_SIZE;
 						
 						pData->first_line_buf[tach_render_counter] = (rpm >= (settings_manager_get_min_rpm() + rpm_delta*tach_render_counter) ? '|' : ' ');
 					}

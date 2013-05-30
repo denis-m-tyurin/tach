@@ -17,7 +17,7 @@ const char settings_tach_pulses_str[] PROGMEM = "ÈÌÏÓËÜÑÎÂ/ÎÁÎÐÎÒ";
 typedef struct 
 {
 	char* settings_tach_pulses_str_tmp;
-	char out_buf[18];
+	char out_buf[DISPLAY_LINE_SIZE+1];
 	uint8_t view_mode;
 	uint8_t tmp_pulses_setting;
 } settings_tach_pulses_state_strings;
@@ -66,7 +66,8 @@ void state_settings_tach_pulses_event_handler(uint8_t event, void **pStateBuf, v
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "%u :%u מב/ל       " : "<%u> :%u מב/ל     "), pData->tmp_pulses_setting, tach_monitor_get_rpm());
+			snprintf(pData->out_buf, DISPLAY_LINE_SIZE+1, (pData->view_mode == 1 ? "%u :%u מב/ל" : "<%u> :%u מב/ל"), pData->tmp_pulses_setting, tach_monitor_get_rpm());
+			pData->out_buf[DISPLAY_LINE_SIZE] = 0;
 			displayPrintLine(pData->settings_tach_pulses_str_tmp, pData->out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:

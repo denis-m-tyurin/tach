@@ -14,8 +14,8 @@
 #include "display.h"
 
 const char side_light_str[] PROGMEM = " ¡Œ–“Œ¬€≈ Œ√Õ»";
-const char side_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ€>  ";
-const char side_light_on_str[] PROGMEM = "    <√Œ–ﬂ“>     ";
+const char side_light_off_str[] PROGMEM = "   <¬€ Àﬁ◊≈Õ€>";
+const char side_light_on_str[] PROGMEM = "    <√Œ–ﬂ“>";
 
 /* Side light switch is PA6 normally pulled down */
 

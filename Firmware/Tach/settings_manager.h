@@ -14,5 +14,9 @@ uint16_t settings_manager_get_min_rpm();
 void settings_manager_set_min_rpm(uint16_t minRPM);
 uint16_t settings_manager_get_backlight_timeout();
 void settings_manager_set_backlight_timeout(uint16_t backlightTimeout);
+uint16_t settings_manager_get_max_voltage();
+void settings_manager_set_max_voltage(uint16_t maxVOLTAGE);
+uint16_t settings_manager_get_min_voltage();
+void settings_manager_set_min_voltage(uint16_t minVOLTAGE);
 
 #endif

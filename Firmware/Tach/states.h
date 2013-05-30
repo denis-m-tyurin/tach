@@ -26,10 +26,24 @@
  *							|
  *	< SETTINGS:	SET BACKLIGHT TIMEOUT			> 
  *							|
- *	< SETTINGS:	SET VOLTAGE COMPENSATION		>
+ *	< SETTINGS:	SET MIN VOLTAGE					>
+ *							|
+ *	< SETTINGS:	SET MAX VOLTAGE					>
+ *							|
+  *	< SETTINGS:	SET VOLTAGE COMPENSATION		>
  *							|
  *	< SETTINGS:	EXIT							>
  *				|
+ *    AUX STATES
+ *
+ *	< ALARM: MIN RPM							>
+ *
+ *	< ALARM: MAX RPM							>
+ *
+ *	< ALARM: MIN VOLTAGE						>
+ *
+ *	< ALARM: MAX VOLTAGE						>
+ *
  */
 
 typedef enum 
@@ -45,8 +59,14 @@ typedef enum
 	TACH_STATE_SETTINGS_MAX_RPM,
 	TACH_STATE_SETTINGS_BACKLIGHT_INTENSITY,
 	TACH_STATE_SETTINGS_BACKLIGHT_TIMEOUT,
+	TACH_STATE_SETTINGS_MIN_VOLTAGE,
+	TACH_STATE_SETTINGS_MAX_VOLTAGE,
 	TACH_STATE_SETTINGS_VOLTAGE_COMP,
 	TACH_STATE_SETTINGS_EXIT,
+	TACH_STATE_ALARM_MIN_RPM,
+	TACH_STATE_ALARM_MAX_RPM,
+	TACH_STATE_ALARM_MIN_VOLTAGE,
+	TACH_STATE_ALARM_MAX_VOLTAGE,
 	
 	TACH_STATE_STATE_MAX
 } TACH_STATE_ID_T;
@@ -75,6 +95,7 @@ void tach_states_schedule_state(TACH_STATE_ID_T state_id);
 TACH_STATE_ID_T tach_states_get_next_state();
 TACH_STATE_ID_T tach_states_get_prev_state();
 TACH_STATE_ID_T tach_states_get_scheduled_state();
+TACH_STATE_ID_T tach_states_get_past_state();
 
 void tach_states_dispatch_event(uint8_t event, void *data);
 #endif

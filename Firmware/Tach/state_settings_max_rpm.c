@@ -16,7 +16,7 @@ const char settings_max_rpm_str[] PROGMEM = "МАКС. ОБОРОТОВ";
 typedef struct 
 {
 	char* settings_max_rpm_str_tmp;
-	char out_buf[18];
+	char out_buf[DISPLAY_LINE_SIZE+1];
 	uint8_t view_mode;
 	uint16_t tmp_max_rpm_setting;
 } settings_max_rpm_state_strings;
@@ -65,7 +65,8 @@ void state_settings_max_rpm_event_handler(uint8_t event, void **pStateBuf, void 
 		
 			/* do not break here to redraw screen immediately */	
 		case TACH_EVENT_REDRAW_SCREEN:
-			snprintf(pData->out_buf, 18, (pData->view_mode == 1 ? "   %u об/мин     " : "   <%u> об/мин     "), pData->tmp_max_rpm_setting);
+			snprintf(pData->out_buf, DISPLAY_LINE_SIZE+1, (pData->view_mode == 1 ? "   %u об/мин" : "   <%u> об/мин"), pData->tmp_max_rpm_setting);
+			pData->out_buf[DISPLAY_LINE_SIZE] = 0;
 			displayPrintLine(pData->settings_max_rpm_str_tmp, pData->out_buf);
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:

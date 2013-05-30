@@ -10,7 +10,7 @@
 #include "utils.h"
 #include "display.h"
 
-const char settings_str[] PROGMEM = "   Õ¿—“–Œ… »    ";
+const char settings_str[] PROGMEM = "   Õ¿—“–Œ… »";
 
 void state_settings_parent_enter(void **pStateBuf)
 {
@@ -37,7 +37,7 @@ void state_settings_parent_event_handler(uint8_t event, void **pStateBuf, void *
 			tach_states_schedule_state(tach_states_get_next_state());		
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:		
-			displayPrintLine(settings_str_tmp, "                ");
+			displayPrintLine(settings_str_tmp, " ");
 			break;
 		case TACH_EVENT_ENCODER_RIGHT:
 			/* Jump to the first state */

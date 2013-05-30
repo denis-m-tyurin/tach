@@ -16,6 +16,8 @@
 #define EEPROM_SETTING_MAX_RPM_ADDR 8
 #define EEPROM_SETTING_MIN_RPM_ADDR 10
 #define EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR 12
+#define EEPROM_SETTING_MAX_VOLTAGE_ADDR 14
+#define EEPROM_SETTING_MIN_VOLTAGE_ADDR 16
 
 /* Other defines */
 #define EEPROM_MAGIC_NUMBER 0xABCD
@@ -28,6 +30,8 @@ static uint8_t pulses_per_revolution = 1;
 static uint16_t max_rpm = 10000;
 static uint16_t min_rpm = 600;
 static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
+static uint16_t max_voltage = 900;
+static uint16_t min_voltage = 10;
 
 void settings_manager_init()
 {
@@ -42,6 +46,8 @@ void settings_manager_init()
 		max_rpm = eeprom_read_word((void *)EEPROM_SETTING_MAX_RPM_ADDR);
 		min_rpm = eeprom_read_word((void *)EEPROM_SETTING_MIN_RPM_ADDR);
 		backlight_timeout = eeprom_read_word((void *)EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR);
+		max_voltage = eeprom_read_word((void *)EEPROM_SETTING_MAX_VOLTAGE_ADDR);
+		min_voltage = eeprom_read_word((void *)EEPROM_SETTING_MIN_VOLTAGE_ADDR);
 	}
 	else
 	{
@@ -63,6 +69,8 @@ void settings_manager_write_data()
 	eeprom_write_word((void *) EEPROM_SETTING_MAX_RPM_ADDR, max_rpm);
 	eeprom_write_word((void *) EEPROM_SETTING_MIN_RPM_ADDR, min_rpm);
 	eeprom_write_word((void *) EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR, backlight_timeout);
+	eeprom_write_word((void *) EEPROM_SETTING_MAX_VOLTAGE_ADDR, max_voltage);
+	eeprom_write_word((void *) EEPROM_SETTING_MIN_VOLTAGE_ADDR, min_voltage);
 }
 
 
@@ -131,3 +139,26 @@ void settings_manager_set_backlight_timeout(uint16_t backlightTimeout)
 	backlight_timeout = backlightTimeout;
 	settings_manager_write_data();
 }
+
+uint16_t settings_manager_get_max_voltage()
+{
+	return max_voltage;
+}
+
+void settings_manager_set_max_voltage(uint16_t maxVOLTAGE)
+{
+	max_voltage = maxVOLTAGE;
+	settings_manager_write_data();
+}
+
+uint16_t settings_manager_get_min_voltage()
+{
+	return min_voltage;
+}
+
+void settings_manager_set_min_voltage(uint16_t minVOLTAGE)
+{
+	min_voltage = minVOLTAGE;
+	settings_manager_write_data();
+}
+
