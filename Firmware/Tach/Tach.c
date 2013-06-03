@@ -14,7 +14,6 @@
 
 #include <stdio.h>
 #include <avr/io.h>
-#include <avr/sleep.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
 #include "display.h"
@@ -98,17 +97,17 @@ int main(void)
 		switch(encoder_monitor_get_last_action())
 		{
 			case ENCODER_ACTION_RIGHT:
-			//	beeper_play_tone(40);
+				beeper_play_tone(40);
 				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_RIGHT , NULL);
 				break;
 			case ENCODER_ACTION_LEFT:
-			//	beeper_play_tone(40);
+				beeper_play_tone(40);
 				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_LEFT , NULL);
 				break;
 			case ENCODER_ACTION_BUTTON_PRESSED:
-			//	beeper_play_tone(400);
+				beeper_play_tone(400);
 				display_timeout_user_active();
 				tach_states_dispatch_event(TACH_EVENT_ENCODER_BUTTON_PRESSED , NULL);
 				break;				
@@ -140,6 +139,14 @@ int main(void)
 			}
 			
 			display_timeout_1sec_tick();
+			
+			if (settings_manager_get_backlight_tach_on() == SETTINGS_MANAGER_BACKLIGHT_ON_WHEN_RUNNING)
+			{
+				if (0 != tach_monitor_get_rpm())
+				{
+					display_timeout_user_active();	
+				}				
+			}
 		}
 
 		/* Check if any state switch is scheduled */

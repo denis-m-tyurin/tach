@@ -211,6 +211,12 @@
     <Compile Include="state_settings_backlight_intensity.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="state_settings_backlight_tach_on.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_backlight_tach_on.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="state_settings_backlight_timeout.c">
       <SubType>compile</SubType>
     </Compile>
@@ -251,6 +257,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_parent.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_powerdown.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_powerdown.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_tach_pulses.c">

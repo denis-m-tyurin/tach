@@ -78,7 +78,7 @@ void state_settings_max_rpm_event_handler(uint8_t event, void **pStateBuf, void 
 			else
 			{
 				/* otherwise, increase the counter */
-				pData->tmp_max_rpm_setting++;
+				pData->tmp_max_rpm_setting += 5;
 			}
 			
 			break;
@@ -91,7 +91,7 @@ void state_settings_max_rpm_event_handler(uint8_t event, void **pStateBuf, void 
 			else
 			{
 				/* otherwise, decrease the counter */
-				if (pData->tmp_max_rpm_setting > 1) pData->tmp_max_rpm_setting--;
+				if (pData->tmp_max_rpm_setting > 5) pData->tmp_max_rpm_setting -= 5;
 			}			
 			break;		
 		default:

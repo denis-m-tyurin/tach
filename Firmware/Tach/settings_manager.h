@@ -1,6 +1,9 @@
 #ifndef SETTINGS_MANAGER_H
 #define SETTINGS_MANAGER_H
 
+#define SETTINGS_MANAGER_BACKLIGHT_ON_WHEN_RUNNING 1
+#define SETTINGS_MANAGER_BACKLIGHT_OFF_WHEN_RUNNING 0
+
 void settings_manager_init();
 uint16_t settings_manager_get_voltage_compensation();
 void settings_manager_set_voltage_compensation(uint16_t voltComp);
@@ -18,5 +21,7 @@ uint16_t settings_manager_get_max_voltage();
 void settings_manager_set_max_voltage(uint16_t maxVOLTAGE);
 uint16_t settings_manager_get_min_voltage();
 void settings_manager_set_min_voltage(uint16_t minVOLTAGE);
+uint8_t settings_manager_get_backlight_tach_on();
+void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn);
 
 #endif

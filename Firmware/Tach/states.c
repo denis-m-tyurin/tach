@@ -12,6 +12,7 @@
 #include "state_settings_max_rpm.h"
 #include "state_settings_backlight_intensity.h"
 #include "state_settings_backlight_timeout.h"
+#include "state_settings_backlight_tach_on.h"
 #include "state_settings_voltage_comp.h"
 #include "state_settings_exit.h"
 #include "state_settings_max_voltage.h"
@@ -20,6 +21,7 @@
 #include "state_alarm_max_rpm.h"
 #include "state_alarm_min_voltage.h"
 #include "state_alarm_max_voltage.h"
+#include "state_settings_powerdown.h"
 
 static void *pCurrentStateBuf = NULL;
 
@@ -72,6 +74,10 @@ TACH_STATE_T s_states[] = {
 		state_settings_backlight_timeout_enter,
 		state_settings_backlight_timeout_exit,
 		state_settings_backlight_timeout_event_handler},
+		{TACH_STATE_SETTINGS_BACKLIGHT_TACH_ON,
+		state_settings_backlight_tach_on_enter,
+		state_settings_backlight_tach_on_exit,
+		state_settings_backlight_tach_on_event_handler},		
 		{TACH_STATE_SETTINGS_MIN_VOLTAGE,
 		state_settings_min_voltage_enter,
 		state_settings_min_voltage_exit,
@@ -84,6 +90,10 @@ TACH_STATE_T s_states[] = {
 		state_settings_voltage_comp_enter,
 		state_settings_voltage_comp_exit,
 		state_settings_voltage_comp_event_handler},		
+		{TACH_STATE_SETTINGS_POWERDOWN,
+		state_settings_powerdown_enter,
+		state_settings_powerdown_exit,
+		state_settings_powerdown_event_handler},
 		{TACH_STATE_SETTINGS_EXIT,
 		state_settings_exit_enter,
 		state_settings_exit_exit,

@@ -18,6 +18,7 @@
 #define EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR 12
 #define EEPROM_SETTING_MAX_VOLTAGE_ADDR 14
 #define EEPROM_SETTING_MIN_VOLTAGE_ADDR 16
+#define EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR 18
 
 /* Other defines */
 #define EEPROM_MAGIC_NUMBER 0xABCD
@@ -27,11 +28,12 @@ static uint8_t magic_written = 0;
 static uint16_t voltage_compensation = 0;
 static uint8_t backlight_intensity = DISPLAY_BACKLIGHT_TOP;
 static uint8_t pulses_per_revolution = 1;
-static uint16_t max_rpm = 10000;
-static uint16_t min_rpm = 600;
+static uint16_t max_rpm = 7000;
+static uint16_t min_rpm = 800;
 static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
 static uint16_t max_voltage = 990;
 static uint16_t min_voltage = 695;
+static uint8_t backlight_tach_on = SETTINGS_MANAGER_BACKLIGHT_ON_WHEN_RUNNING;
 
 void settings_manager_init()
 {
@@ -48,6 +50,7 @@ void settings_manager_init()
 		backlight_timeout = eeprom_read_word((void *)EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR);
 		max_voltage = eeprom_read_word((void *)EEPROM_SETTING_MAX_VOLTAGE_ADDR);
 		min_voltage = eeprom_read_word((void *)EEPROM_SETTING_MIN_VOLTAGE_ADDR);
+		backlight_tach_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR);
 	}
 	else
 	{
@@ -71,6 +74,7 @@ void settings_manager_write_data()
 	eeprom_write_word((void *) EEPROM_SETTING_BACKLIGHT_TIMEOUT_ADDR, backlight_timeout);
 	eeprom_write_word((void *) EEPROM_SETTING_MAX_VOLTAGE_ADDR, max_voltage);
 	eeprom_write_word((void *) EEPROM_SETTING_MIN_VOLTAGE_ADDR, min_voltage);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR, backlight_tach_on);
 }
 
 
@@ -159,6 +163,17 @@ uint16_t settings_manager_get_min_voltage()
 void settings_manager_set_min_voltage(uint16_t minVOLTAGE)
 {
 	min_voltage = minVOLTAGE;
+	settings_manager_write_data();
+}
+
+uint8_t settings_manager_get_backlight_tach_on()
+{
+	return backlight_tach_on;
+}
+
+void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn)
+{
+	backlight_tach_on = backlightTachOn;
 	settings_manager_write_data();
 }
 

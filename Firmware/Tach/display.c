@@ -437,6 +437,8 @@ char displayTranslateSymb(const char symb)
 				return 0xe3;
 		case 'å':
 				return 0x65;		
+		case 'æ':
+				return 0xb6;
 		case 'è':
 				return 0xb8;
 		case 'ê':
@@ -455,8 +457,11 @@ char displayTranslateSymb(const char symb)
 				return 0x79;
 		case '÷':
 				return 0xc0;
+		case 'û':
+				return 0xc3;				
 		case 'ş':
 				return 0xc6;
+
 		default:
 			break;
 	}

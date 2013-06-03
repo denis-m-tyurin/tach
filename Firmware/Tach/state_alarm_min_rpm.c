@@ -11,6 +11,8 @@
 #include "display.h"
 #include "settings_manager.h"
 #include "alarm_monitor.h"
+#include "tach_monitor.h"
+#include "beeper.h"
 
 const char alarm_min_rpm_str[] PROGMEM = "ÍÈÇÊÈÅ ÎÁÎÐÎÒÛ";
 
@@ -46,6 +48,8 @@ void state_alarm_min_rpm_exit(void **pStateBuf)
 void state_alarm_min_rpm_event_handler(uint8_t event, void **pStateBuf, void *data)
 {	
 	alarm_min_rpm_state_data *pData = (alarm_min_rpm_state_data*) *pStateBuf;
+	uint16_t rpm;
+	uint16_t min_rpm;
 
 	switch (event)
 	{
@@ -56,11 +60,23 @@ void state_alarm_min_rpm_event_handler(uint8_t event, void **pStateBuf, void *da
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:
 			display_timeout_user_active();
+			beeper_play_tone(200);
+			
 			if (ALARM_STATE_ARMED == alarm_get_alarm_state(ALARM_MIN_RPM))
 			{
 				tach_states_schedule_state(tach_states_get_past_state());
 				break;
 			}
+			
+			rpm = tach_monitor_get_rpm();
+			min_rpm = settings_manager_get_min_rpm();
+						
+			snprintf(pData->out_buf,
+			         DISPLAY_LINE_SIZE+1,
+					 "%u (%u)",
+					 rpm,
+					 min_rpm);
+			
 			pData->out_buf[DISPLAY_LINE_SIZE] = 0;
 			displayPrintLine(pData->alarm_min_rpm_str_tmp, pData->out_buf);
 			break;
