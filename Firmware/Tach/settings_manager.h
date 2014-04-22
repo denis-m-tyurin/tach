@@ -4,6 +4,12 @@
 #define SETTINGS_MANAGER_BACKLIGHT_ON_WHEN_RUNNING 1
 #define SETTINGS_MANAGER_BACKLIGHT_OFF_WHEN_RUNNING 0
 
+#define SETTINGS_MANAGER_BEEPER_DISABLED 0
+#define SETTINGS_MANAGER_BEEPER_ENABLED 1
+
+#define SETTINGS_MANAGER_ALARM_DISABLED 0
+#define SETTINGS_MANAGER_ALARM_ENABLED 1
+
 void settings_manager_init();
 uint16_t settings_manager_get_voltage_compensation();
 void settings_manager_set_voltage_compensation(uint16_t voltComp);
@@ -23,5 +29,16 @@ uint16_t settings_manager_get_min_voltage();
 void settings_manager_set_min_voltage(uint16_t minVOLTAGE);
 uint8_t settings_manager_get_backlight_tach_on();
 void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn);
+uint8_t settings_manager_get_beeper_enabled_on();
+void settings_manager_set_beeper_enabled(uint8_t beeperEnabled);
+uint8_t settings_manager_get_min_voltage_alarm_on();
+void settings_manager_set_min_voltage_alarm_on(uint8_t minVoltageAlarmOn);
+uint8_t settings_manager_get_max_voltage_alarm_on();
+void settings_manager_set_max_voltage_alarm_on(uint8_t maxVoltageAlarmOn);
+uint8_t settings_manager_get_min_rpm_alarm_on();
+void settings_manager_set_min_rpm_alarm_on(uint8_t minRPMAlarmOn);
+uint8_t settings_manager_get_max_rpm_alarm_on();
+void settings_manager_set_max_rpm_alarm_on(uint8_t maxRPMAlarmOn);
+
 
 #endif

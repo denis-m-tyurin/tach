@@ -19,6 +19,11 @@
 #define EEPROM_SETTING_MAX_VOLTAGE_ADDR 14
 #define EEPROM_SETTING_MIN_VOLTAGE_ADDR 16
 #define EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR 18
+#define EEPROM_SETTING_BEEPER_ENABLED_ADDR 20
+#define EEPROM_SETTING_MIN_VOLTAGE_ALARM_ON_ADDR 22
+#define EEPROM_SETTING_MAX_VOLTAGE_ALARM_ON_ADDR 24
+#define EEPROM_SETTING_MIN_RPM_ALARM_ON_ADDR 26
+#define EEPROM_SETTING_MAX_RPM_ALARM_ON_ADDR 28
 
 /* Other defines */
 #define EEPROM_MAGIC_NUMBER 0xABCD
@@ -34,6 +39,11 @@ static uint16_t backlight_timeout = DISPLAY_BACKLIGHT_TIMEOUT_ALWAYS_ON;
 static uint16_t max_voltage = 990;
 static uint16_t min_voltage = 695;
 static uint8_t backlight_tach_on = SETTINGS_MANAGER_BACKLIGHT_ON_WHEN_RUNNING;
+static uint8_t beeper_enabled = SETTINGS_MANAGER_BEEPER_ENABLED;
+static uint8_t min_voltage_alarm_on = SETTINGS_MANAGER_ALARM_ENABLED;
+static uint8_t max_voltage_alarm_on = SETTINGS_MANAGER_ALARM_ENABLED;
+static uint8_t min_rpm_alarm_on = SETTINGS_MANAGER_ALARM_ENABLED;
+static uint8_t max_rpm_alarm_on = SETTINGS_MANAGER_ALARM_ENABLED;
 
 void settings_manager_init()
 {
@@ -51,6 +61,11 @@ void settings_manager_init()
 		max_voltage = eeprom_read_word((void *)EEPROM_SETTING_MAX_VOLTAGE_ADDR);
 		min_voltage = eeprom_read_word((void *)EEPROM_SETTING_MIN_VOLTAGE_ADDR);
 		backlight_tach_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR);
+		beeper_enabled = eeprom_read_byte((uint8_t *)EEPROM_SETTING_BEEPER_ENABLED_ADDR);
+		min_voltage_alarm_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_MIN_VOLTAGE_ALARM_ON_ADDR);
+		max_voltage_alarm_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_MAX_VOLTAGE_ALARM_ON_ADDR);
+		min_rpm_alarm_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_MIN_RPM_ALARM_ON_ADDR);
+		max_rpm_alarm_on = eeprom_read_byte((uint8_t *)EEPROM_SETTING_MAX_RPM_ALARM_ON_ADDR);
 	}
 	else
 	{
@@ -75,6 +90,11 @@ void settings_manager_write_data()
 	eeprom_write_word((void *) EEPROM_SETTING_MAX_VOLTAGE_ADDR, max_voltage);
 	eeprom_write_word((void *) EEPROM_SETTING_MIN_VOLTAGE_ADDR, min_voltage);
 	eeprom_write_byte((uint8_t *) EEPROM_SETTING_BACKLIGHT_TACH_ON_ADDR, backlight_tach_on);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_BEEPER_ENABLED_ADDR, beeper_enabled);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_MIN_VOLTAGE_ALARM_ON_ADDR, min_voltage_alarm_on);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_MAX_VOLTAGE_ALARM_ON_ADDR, max_voltage_alarm_on);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_MIN_RPM_ALARM_ON_ADDR, min_rpm_alarm_on);
+	eeprom_write_byte((uint8_t *) EEPROM_SETTING_MAX_RPM_ALARM_ON_ADDR, max_rpm_alarm_on);
 }
 
 
@@ -177,3 +197,57 @@ void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn)
 	settings_manager_write_data();
 }
 
+uint8_t settings_manager_get_beeper_enabled_on()
+{
+	return beeper_enabled;	
+}
+
+void settings_manager_set_beeper_enabled(uint8_t beeperEnabled)
+{
+	beeper_enabled = beeperEnabled;
+	settings_manager_write_data();	
+}
+
+uint8_t settings_manager_get_min_voltage_alarm_on()
+{
+	return min_voltage_alarm_on;
+}
+
+void settings_manager_set_min_voltage_alarm_on(uint8_t minVoltageAlarmOn)
+{
+	min_voltage_alarm_on = minVoltageAlarmOn;
+	settings_manager_write_data();	
+}
+
+uint8_t settings_manager_get_max_voltage_alarm_on()
+{
+	return max_voltage_alarm_on;	
+}
+
+void settings_manager_set_max_voltage_alarm_on(uint8_t maxVoltageAlarmOn)
+{
+	max_voltage_alarm_on = maxVoltageAlarmOn;
+	settings_manager_write_data();
+}
+
+uint8_t settings_manager_get_min_rpm_alarm_on()
+{
+	return min_rpm_alarm_on;	
+}
+
+void settings_manager_set_min_rpm_alarm_on(uint8_t minRPMAlarmOn)
+{
+	min_rpm_alarm_on = minRPMAlarmOn;
+	settings_manager_write_data();	
+}
+
+uint8_t settings_manager_get_max_rpm_alarm_on()
+{
+	return max_rpm_alarm_on;
+}
+
+void settings_manager_set_max_rpm_alarm_on(uint8_t maxRPMAlarmOn)
+{
+	max_rpm_alarm_on = maxRPMAlarmOn;
+	settings_manager_write_data();
+}
