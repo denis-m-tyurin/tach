@@ -197,7 +197,7 @@ void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn)
 	settings_manager_write_data();
 }
 
-uint8_t settings_manager_get_beeper_enabled_on()
+uint8_t settings_manager_get_beeper_enabled()
 {
 	return beeper_enabled;	
 }

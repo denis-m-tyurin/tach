@@ -29,10 +29,9 @@ void beeper_init()
 
 void beeper_play_tone(uint16_t duration)
 {
-	
 	OCR1B = 35;
-	TCCR1A |= (1 << COM1B1);	
-	remaining_duration = duration;
+	TCCR1A |= (1 << COM1B1);
+	remaining_duration = duration;		
 }
 
 void beeper_handle_timer_int()

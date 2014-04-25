@@ -60,7 +60,7 @@ void state_alarm_max_voltage_event_handler(uint8_t event, void **pStateBuf, void
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:
 			display_timeout_user_active();
-			beeper_play_tone(200);
+			if (settings_manager_get_beeper_enabled()) beeper_play_tone(200);
 			if (ALARM_STATE_ARMED == alarm_get_alarm_state(ALARM_MAX_VOLTAGE))
 			{
 				tach_states_schedule_state(tach_states_get_past_state());

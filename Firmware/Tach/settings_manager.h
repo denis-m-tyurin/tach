@@ -29,7 +29,7 @@ uint16_t settings_manager_get_min_voltage();
 void settings_manager_set_min_voltage(uint16_t minVOLTAGE);
 uint8_t settings_manager_get_backlight_tach_on();
 void settings_manager_set_backlight_tach_on(uint8_t backlightTachOn);
-uint8_t settings_manager_get_beeper_enabled_on();
+uint8_t settings_manager_get_beeper_enabled();
 void settings_manager_set_beeper_enabled(uint8_t beeperEnabled);
 uint8_t settings_manager_get_min_voltage_alarm_on();
 void settings_manager_set_min_voltage_alarm_on(uint8_t minVoltageAlarmOn);

@@ -223,6 +223,12 @@
     <Compile Include="state_settings_backlight_timeout.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="state_settings_beeper_enabled.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_beeper_enabled.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="state_settings_exit.c">
       <SubType>compile</SubType>
     </Compile>
@@ -235,10 +241,22 @@
     <Compile Include="state_settings_max_rpm.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="state_settings_max_rpm_alarm_on.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_max_rpm_alarm_on.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="state_settings_max_voltage.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_max_voltage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_max_voltage_alarm_on.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_max_voltage_alarm_on.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_min_rpm.c">
@@ -247,10 +265,22 @@
     <Compile Include="state_settings_min_rpm.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="state_settings_min_rpm_alarm_on.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_min_rpm_alarm_on.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="state_settings_min_voltage.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_min_voltage.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_min_voltage_alarm_on.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="state_settings_min_voltage_alarm_on.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="state_settings_parent.c">

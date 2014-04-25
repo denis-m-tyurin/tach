@@ -60,7 +60,7 @@ void state_alarm_min_rpm_event_handler(uint8_t event, void **pStateBuf, void *da
 			break;
 		case TACH_EVENT_REDRAW_SCREEN:
 			display_timeout_user_active();
-			beeper_play_tone(200);
+			if (settings_manager_get_beeper_enabled()) beeper_play_tone(200);
 			
 			if (ALARM_STATE_ARMED == alarm_get_alarm_state(ALARM_MIN_RPM))
 			{

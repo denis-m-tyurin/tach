@@ -22,6 +22,12 @@
 #include "state_alarm_min_voltage.h"
 #include "state_alarm_max_voltage.h"
 #include "state_settings_powerdown.h"
+#include "state_settings_beeper_enabled.h"
+#include "state_settings_min_voltage_alarm_on.h"
+#include "state_settings_max_voltage_alarm_on.h"
+#include "state_settings_min_rpm_alarm_on.h"
+#include "state_settings_max_rpm_alarm_on.h"
+
 
 static void *pCurrentStateBuf = NULL;
 
@@ -90,6 +96,26 @@ TACH_STATE_T s_states[] = {
 		state_settings_voltage_comp_enter,
 		state_settings_voltage_comp_exit,
 		state_settings_voltage_comp_event_handler},		
+		{TACH_STATE_SETTINGS_BEEPER_ENABLED,
+		state_settings_beeper_enabled_enter,
+		state_settings_beeper_enabled_exit,
+		state_settings_beeper_enabled_event_handler},
+		{TACH_STATE_SETTINGS_MIN_VOLTAGE_ALARM_ON,
+		state_settings_min_voltage_alarm_on_enter,
+		state_settings_min_voltage_alarm_on_exit,
+		state_settings_min_voltage_alarm_on_event_handler},
+		{TACH_STATE_SETTINGS_MAX_VOLTAGE_ALARM_ON,
+		state_settings_max_voltage_alarm_on_enter,
+		state_settings_max_voltage_alarm_on_exit,
+		state_settings_max_voltage_alarm_on_event_handler},
+		{TACH_STATE_SETTINGS_MIN_RPM_ALARM_ON,
+		state_settings_min_rpm_alarm_on_enter,
+		state_settings_min_rpm_alarm_on_exit,
+		state_settings_min_rpm_alarm_on_event_handler},
+		{TACH_STATE_SETTINGS_MAX_RPM_ALARM_ON,
+		state_settings_max_rpm_alarm_on_enter,
+		state_settings_max_rpm_alarm_on_exit,
+		state_settings_max_rpm_alarm_on_event_handler},
 		{TACH_STATE_SETTINGS_POWERDOWN,
 		state_settings_powerdown_enter,
 		state_settings_powerdown_exit,

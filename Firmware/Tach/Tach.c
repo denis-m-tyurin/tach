@@ -123,16 +123,16 @@ int main(void)
 			switch (alarm_monitor_1sec_tick_check_alarm())
 			{
 				case ALARM_MIN_RPM:
-					tach_states_schedule_state(TACH_STATE_ALARM_MIN_RPM);
+					if (settings_manager_get_min_rpm_alarm_on()) tach_states_schedule_state(TACH_STATE_ALARM_MIN_RPM);
 					break;
 				case ALARM_MAX_RPM:
-					tach_states_schedule_state(TACH_STATE_ALARM_MAX_RPM);
+					if (settings_manager_get_max_rpm_alarm_on()) tach_states_schedule_state(TACH_STATE_ALARM_MAX_RPM);
 					break;					
 				case ALARM_MIN_VOLTAGE:
-					tach_states_schedule_state(TACH_STATE_ALARM_MIN_VOLTAGE);
+					if (settings_manager_get_min_voltage_alarm_on()) tach_states_schedule_state(TACH_STATE_ALARM_MIN_VOLTAGE);
 					break;
 				case ALARM_MAX_VOLTAGE:
-					tach_states_schedule_state(TACH_STATE_ALARM_MAX_VOLTAGE);
+					if (settings_manager_get_max_voltage_alarm_on()) tach_states_schedule_state(TACH_STATE_ALARM_MAX_VOLTAGE);
 					break;	
 				default:
 					break;
